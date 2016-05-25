@@ -1,0 +1,67 @@
+﻿<metro:MetroWindow  x:Class="Payroll_.PPeriod"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Payroll_"
+        xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" 
+        GlowBrush="{DynamicResource AccentColorBrush}" Height="430.338" Width="836.462" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" ResizeMode="NoResize">
+    <Grid Margin="0,0,2,3">
+        <DataGrid  x:Name="dtPperiod" 
+    		SelectedItem="{Binding Attendance, Mode=TwoWay}"
+    		AutoGenerateColumns="False" CanUserAddRows="False"
+    		IsReadOnly="True"
+    		CanUserReorderColumns="False"
+    		AlternatingRowBackground="LightGray"     
+    		Style="{DynamicResource AzureDataGrid}" 
+    		Margin="10,49,11,89" 
+    		Cursor="" Background="White" GridLinesVisibility="Horizontal" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" SelectionChanged="dtPperiod_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn 
+    				ElementStyle="{DynamicResource MetroDataGridCheckBox}"
+    				EditingElementStyle="{DynamicResource MetroDataGridCheckBox}"
+    				Header="selected"
+    				Binding="{Binding IsSelected, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"/>
+                <DataGridTemplateColumn  Width="SizeToCells" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Height="20" Source="{Binding Image}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn                  
+    				Binding="{Binding _ID}" />
+
+                <DataGridTextColumn Header="Payroll Date"               
+    				Binding="{Binding _pPeriod}" Width="auto"/>
+
+                <DataGridTextColumn Header="Start Date"                      
+    				Binding="{Binding _pStartDate}" Width="auto" />
+
+                <DataGridTextColumn Header="End Date"                      
+    				Binding="{Binding _pEndDate}" Width="auto"/>
+
+                <DataGridTextColumn Header="Mata Start"                               
+    				Binding="{Binding _mStartDate}" Width="auto"/>
+
+                <DataGridTextColumn Header="Mata END"                               
+    				Binding="{Binding _mEndDate}" Width="auto"/>
+
+                <DataGridTextColumn Binding="{Binding Name}" />
+
+                <!--<DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding Date}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
+            </DataGrid.Columns>
+
+        </DataGrid>
+        <Button x:Name="btProceed"  Content="{StaticResource appbar_billing}"  HorizontalAlignment="Left" Margin="642,320,0,6" Width="175" Click="btProceed_Click"/>
+        <CheckBox x:Name="ckTOPFive" Content="TOP 5" HorizontalAlignment="Left" Height="39" Margin="10,320,0,0" VerticalAlignment="Top" Width="137" IsChecked="True" Unchecked="ckTOPFive_Unchecked" Checked="ckTOPFive_Checked"/>
+
+    </Grid>
+</metro:MetroWindow>

@@ -1,0 +1,415 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Custom="http://metro.mahapps.com/winfx/xaml/controls" x:Class="Payroll_.EmpInfo" 
+             mc:Ignorable="d" 
+             Background="Black"  >
+    <Grid>
+
+        <TabControl BorderBrush="#FFFBFBFB">
+            <TabItem Header="Tardiness">
+                <Grid Margin="-1,3,-3,0" Background="#FF232323">
+
+                    <DataGrid  x:Name="dtLate" 
+						SelectedItem="{Binding getEmpLate, Mode=TwoWay}"
+						AutoGenerateColumns="False" CanUserAddRows="False"
+						IsReadOnly="True"
+						CanUserReorderColumns="False"     
+						Margin="0,37,0,23" 
+                        VerticalGridLinesBrush="WhiteSmoke"
+						Cursor="" Background="#FF323232"               	
+						GridLinesVisibility="All"  BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" Foreground="Black"  SelectionMode="Single">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn  
+								Binding="{Binding _ctr}" Width="auto" />
+                            <DataGridTextColumn Header="Date"   
+								Binding="{Binding _Date}" Width="auto" />
+                            <DataGridTextColumn Header="Week"   
+								Binding="{Binding _Week}" Width="auto" />
+                            <DataGridTextColumn Header="Schedule"   
+								Binding="{Binding _CurSchedule}" Width="auto" />
+                            <DataGridTextColumn Header="Late"
+								Binding="{Binding _Status}" Width="auto"/>
+                            <DataGridTextColumn Header="Date IN"
+								Binding="{Binding _CurDateIN}" Width="auto"/>
+                            <DataGridTextColumn Header="Date OUT"
+								Binding="{Binding _CurDateOUT}" Width="auto"/>
+                            <DataGridTextColumn Header="Status"
+								Binding="{Binding _DailyStat}" Width="auto"/>
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                    <Custom:Tile x:Name="TileLate" Height="Auto" Margin="0" Width="Auto" FontSize="16" IsEnabled="False" VerticalAlignment="Top" Background="#FF000002" BorderBrush="White" BorderThickness="0.5,0.5,1,0.5"/>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Mata" Background="#00000000">
+                <Grid Background="#FF232323" Margin="0,0,-5,5">
+                    <DataGrid  x:Name="dtMata" 
+						SelectedItem="{Binding getMata, Mode=TwoWay}"
+						AutoGenerateColumns="False" CanUserAddRows="False"
+						IsReadOnly="True"
+						CanUserReorderColumns="False"     
+						Margin="0,37,0,26" 
+						Cursor="" Background="#FF323232"               	
+						GridLinesVisibility="Horizontal" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" Foreground="Black" SelectionMode="Single" SelectionChanged="dtMata_SelectionChanged">
+
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn  
+								Binding="{Binding _ctr}" Width="auto" />
+                            <DataGridTextColumn Header="Employee ID"   
+								Binding="{Binding _EmpNO}" Width="auto" />
+                            <DataGridTextColumn Header="Date IN"
+								Binding="{Binding _DateIN}" Width="auto"/>
+                            <DataGridTextColumn Header="Date Out"
+								Binding="{Binding _DateOUT}" Width="auto"/>
+                            <DataGridTextColumn Header="Week"
+								Binding="{Binding _Week}" Width="auto"/>
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                    <Custom:Tile x:Name="TileMata" Content="" Height="38" Margin="0" Width="Auto" FontSize="16" IsEnabled="False" Background="Black" BorderBrush="White" BorderThickness="0.5,0.5,1,0.5" VerticalAlignment="Top" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Holiday" Background="Black">
+                <Grid Background="#00000000">
+                    <Custom:Tile x:Name="TileHoliday" Content="" Height="Auto" Margin="5,0,0,0" Width="Auto" FontSize="14" IsEnabled="False" VerticalAlignment="Top" Background="Black" BorderBrush="White" BorderThickness="0.5,0.5,1,0.5"/>
+                    <DataGrid  x:Name="dtHoliday" 
+						SelectedItem="{Binding getMata, Mode=TwoWay}"
+						AutoGenerateColumns="False" CanUserAddRows="False"
+						IsReadOnly="True"
+						CanUserReorderColumns="False"     
+						Margin="0,37,0,0" 
+						Cursor="" Background="#FF323232"               	
+						GridLinesVisibility="Horizontal" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" Foreground="Black" SelectionMode="Single" >
+
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn  
+								Binding="{Binding _ctr}" Width="auto" />
+                            <DataGridTextColumn Header="Holiday Description"   
+								Binding="{Binding _HolidayDesc}" Width="auto" />
+                            <DataGridTextColumn Header="Holiday Date"
+								Binding="{Binding _HolidayDate}" Width="auto"/>
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="OverTime" Background="#00000000">
+                <Grid Background="#00000000">
+                    <Custom:Tile x:Name="TileOT" Content="" Height="Auto" Margin="0" Width="Auto" FontSize="16" IsEnabled="False" VerticalAlignment="Top" Background="Black" BorderBrush="White" BorderThickness="0.5,0.5,1,0.5" />
+                    <TabControl Margin="0,43,0,-6"  >
+                        <TabItem x:Name="tabOT" Header="Regular OT" Width="146" Height="37"  >
+                            <Grid Background="#00000000" Margin="0,0,-8,0">
+                                <DataGrid  x:Name="dtRegularOT" 
+									SelectedItem="{Binding getMata, Mode=TwoWay}"
+									AutoGenerateColumns="False" CanUserAddRows="False"
+									IsReadOnly="True"
+									CanUserReorderColumns="False" 
+									Cursor="" Background="#FF323232"               	
+									GridLinesVisibility="Horizontal" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" Foreground="Black"  SelectionMode="Single">
+
+                                    <DataGrid.Columns>
+
+                                        <DataGridTextColumn  
+											Binding="{Binding _ctr}" Width="auto" />
+                                        <DataGridTextColumn Header="OT DATE"   
+											Binding="{Binding _OTDate}" Width="auto" />
+                                        <DataGridTextColumn Header="OT Start Time"
+											Binding="{Binding _OTStart}" Width="auto"/>
+                                        <DataGridTextColumn Header="OT End Time"
+											Binding="{Binding _OTEnd}" Width="auto"/>
+                                        <DataGridTextColumn Header="Total OT"
+											Binding="{Binding _OTTotal}" Width="auto"/>
+                                        <DataGridTextColumn Header="Reason"
+											Binding="{Binding _Reason}" Width="auto"/>
+                                        <DataGridTextColumn Header="Status"
+											Binding="{Binding _Status}" Width="auto"/>
+                                    </DataGrid.Columns>
+
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="RestDay OT" Background="#00000000">
+                            <Grid Background="#00000000" Margin="0,0,-9,0">
+                                <DataGrid  x:Name="dtRestDayOT" 
+									SelectedItem="{Binding getMata, Mode=TwoWay}"
+									AutoGenerateColumns="False" CanUserAddRows="False"
+									IsReadOnly="True"
+									CanUserReorderColumns="False" 
+									Cursor="" Background="#FF323232"               	
+									GridLinesVisibility="Horizontal" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" Foreground="Black"  SelectionMode="Single">
+
+                                    <DataGrid.Columns>
+
+                                        <DataGridTextColumn  
+											Binding="{Binding _ctr}" Width="auto" />
+                                        <DataGridTextColumn Header="OT DATE"   
+											Binding="{Binding _OTDate}" Width="auto" />
+                                        <DataGridTextColumn Header="OT Start Time"
+											Binding="{Binding _OTStart}" Width="auto"/>
+                                        <DataGridTextColumn Header="OT End Time"
+											Binding="{Binding _OTEnd}" Width="auto"/>
+                                        <DataGridTextColumn Header="Total OT"
+											Binding="{Binding _OTTotal}" Width="auto"/>
+                                        <DataGridTextColumn Header="Reason"
+											Binding="{Binding _Reason}" Width="auto"/>
+                                        <DataGridTextColumn Header="Status"
+											Binding="{Binding _Status}" Width="auto"/>
+                                    </DataGrid.Columns>
+
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Holiday OT">
+                            <Grid Background="#00000000" Margin="0,0,-8,0">
+                                <DataGrid  x:Name="dtLegalHolidayOT" 
+									SelectedItem="{Binding getMata, Mode=TwoWay}"
+									AutoGenerateColumns="False" CanUserAddRows="False"
+									IsReadOnly="True"
+									CanUserReorderColumns="False" 
+									Cursor="" Background="#FF323232"               	
+									GridLinesVisibility="Horizontal" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" Foreground="Black" SelectionMode="Single">
+
+                                    <DataGrid.Columns>
+
+                                        <DataGridTextColumn  
+											Binding="{Binding _ctr}" Width="auto" />
+                                        <DataGridTextColumn Header="OT DATE"   
+											Binding="{Binding _OTDate}" Width="auto" />
+                                        <DataGridTextColumn Header="OT Start Time"
+											Binding="{Binding _OTStart}" Width="auto"/>
+                                        <DataGridTextColumn Header="OT End Time"
+											Binding="{Binding _OTEnd}" Width="auto"/>
+                                        <DataGridTextColumn Header="Total OT"
+											Binding="{Binding _OTTotal}" Width="auto"/>
+                                        <DataGridTextColumn Header="Reason"
+											Binding="{Binding _Reason}" Width="auto"/>
+                                        <DataGridTextColumn Header="Status"
+											Binding="{Binding _Status}" Width="auto"/>
+                                    </DataGrid.Columns>
+
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Special Holiday OT">
+                            <Grid Background="#FFE5E5E5" Margin="0,0,0,-1">
+                                <DataGrid  x:Name="dtSpecialHoliday" 
+                            		SelectedItem="{Binding getMata, Mode=TwoWay}"
+                            		AutoGenerateColumns="False" CanUserAddRows="False"
+                            		IsReadOnly="True"
+                            		CanUserReorderColumns="False" 
+                            		Cursor="" Background="#FF323232"               	
+                            		GridLinesVisibility="Horizontal" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" Foreground="Black" SelectionMode="Single">
+
+                                    <DataGrid.Columns>
+
+                                        <DataGridTextColumn  
+                            				Binding="{Binding _ctr}" Width="auto" />
+                                        <DataGridTextColumn Header="OT DATE"   
+                            				Binding="{Binding _OTDate}" Width="auto" />
+                                        <DataGridTextColumn Header="OT Start Time"
+                            				Binding="{Binding _OTStart}" Width="auto"/>
+                                        <DataGridTextColumn Header="OT End Time"
+                            				Binding="{Binding _OTEnd}" Width="auto"/>
+                                        <DataGridTextColumn Header="Total OT"
+                            				Binding="{Binding _OTTotal}" Width="auto"/>
+                                        <DataGridTextColumn Header="Reason"
+                            				Binding="{Binding _Reason}" Width="auto"/>
+                                        <DataGridTextColumn Header="Status"
+                            				Binding="{Binding _Status}" Width="auto"/>
+                                    </DataGrid.Columns>
+
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Leave">
+                <Grid Background="Black" Margin="0,0,0,-3">
+                    <TabControl>
+                        <TabItem Header="Vacation">
+                            <Grid Background="#FFE5E5E5">
+                                <DataGrid  x:Name="dtVacationLeave" 
+                            		SelectedItem="{Binding getMata, Mode=TwoWay}"
+                            		AutoGenerateColumns="False" CanUserAddRows="False"
+                            		IsReadOnly="True"
+                            		CanUserReorderColumns="False" 
+                            		Cursor="" Background="#FF323232"               	
+                            		GridLinesVisibility="Horizontal" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" Foreground="Black" SelectionMode="Single" >
+
+                                    <DataGrid.Columns>
+
+                                        <DataGridTextColumn  
+                            				Binding="{Binding _ctr}" Width="auto" />
+                                        <DataGridTextColumn Header="Employee Number"   
+                            				Binding="{Binding _EmpNO}" Width="auto" />
+                                        <DataGridTextColumn Header="Date Filed"
+                            				Binding="{Binding _DateFiled}" Width="auto"/>
+                                        <DataGridTextColumn Header="Date From"
+                            				Binding="{Binding _LeaveDateFrom}" Width="auto"/>
+                                        <DataGridTextColumn Header="Date To"
+                            				Binding="{Binding _LeaveDateTo}" Width="auto"/>
+                                        <DataGridTextColumn Header="Total Days"
+                            				Binding="{Binding _LeaveTotal}" Width="auto"/>
+                                        <DataGridTextColumn Header="Reason"
+                            				Binding="{Binding _Reason}" Width="auto"/>
+                                        <DataGridTextColumn Header="Status"
+                            				Binding="{Binding _Status}" Width="auto"/>
+
+                                    </DataGrid.Columns>
+
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Sick">
+                            <Grid Background="#FFE5E5E5">
+                                <DataGrid  x:Name="dtSickLeave" 
+                            		SelectedItem="{Binding getMata, Mode=TwoWay}"
+                            		AutoGenerateColumns="False" CanUserAddRows="False"
+                            		IsReadOnly="True"
+                            		CanUserReorderColumns="False" 
+                            		Cursor="" Background="#FF323232"               	
+                            		GridLinesVisibility="Horizontal" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" Foreground="Black" SelectionMode="Single" SelectionChanged="dtSickLeave_SelectionChanged" >
+
+                                    <DataGrid.Columns>
+
+                                        <DataGridTextColumn  
+                            				Binding="{Binding _ctr}" Width="auto" />
+                                        <DataGridTextColumn Header="Employee Number"   
+                            				Binding="{Binding _EmpNO}" Width="auto" />
+                                        <DataGridTextColumn Header="Date Filed"
+                            				Binding="{Binding _DateFiled}" Width="auto"/>
+                                        <DataGridTextColumn Header="Date Leave"
+                            				Binding="{Binding _LeaveDateFrom}" Width="auto"/>
+
+                                        <DataGridTextColumn Header="Total Days"
+                            				Binding="{Binding _LeaveTotal}" Width="auto"/>
+                                        <DataGridTextColumn Header="Reason"
+                            				Binding="{Binding _Reason}" Width="auto"/>
+                                        <DataGridTextColumn Header="Status"
+                            				Binding="{Binding _Status}" Width="auto"/>
+
+                                    </DataGrid.Columns>
+
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Emergency">
+                            <Grid Background="#FFE5E5E5" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="157*"/>
+                                    <ColumnDefinition Width="400*"/>
+                                </Grid.ColumnDefinitions>
+                                <DataGrid  x:Name="dtEmergencyLeave" 
+                            		SelectedItem="{Binding getMata, Mode=TwoWay}"
+                            		AutoGenerateColumns="False" CanUserAddRows="False"
+                            		IsReadOnly="True"
+                            		CanUserReorderColumns="False" 
+                            		Cursor="" Background="#FF323232"               	
+                            		GridLinesVisibility="Horizontal" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" Foreground="Black" SelectionMode="Single" Grid.ColumnSpan="2" >
+
+                                    <DataGrid.Columns>
+
+                                        <DataGridTextColumn  
+                            				Binding="{Binding _ctr}" Width="auto" />
+                                        <DataGridTextColumn Header="Employee Number"   
+                            				Binding="{Binding _EmpNO}" Width="auto" />
+                                        <DataGridTextColumn Header="Date Filed"
+                            				Binding="{Binding _DateFiled}" Width="auto"/>
+                                        <DataGridTextColumn Header="Date Leave"
+                            				Binding="{Binding _LeaveDateFrom}" Width="auto"/>
+
+                                        <DataGridTextColumn Header="Total Days"
+                            				Binding="{Binding _LeaveTotal}" Width="auto"/>
+                                        <DataGridTextColumn Header="Reason"
+                            				Binding="{Binding _Reason}" Width="auto"/>
+                                        <DataGridTextColumn Header="Status"
+                            				Binding="{Binding _Status}" Width="auto"/>
+
+                                    </DataGrid.Columns>
+
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Maternity">
+                            <Grid Background="#FFE5E5E5">
+                                <DataGrid  x:Name="dtMaternityLeave" 
+                            		SelectedItem="{Binding getMata, Mode=TwoWay}"
+                            		AutoGenerateColumns="False" CanUserAddRows="False"
+                            		IsReadOnly="True"
+                            		CanUserReorderColumns="False" 
+                            		Cursor="" Background="#FF323232"               	
+                            		GridLinesVisibility="Horizontal" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" Foreground="Black" SelectionMode="Single" >
+
+                                    <DataGrid.Columns>
+
+                                        <DataGridTextColumn  
+                            				Binding="{Binding _ctr}" Width="auto" />
+                                        <DataGridTextColumn Header="Employee Number"   
+                            				Binding="{Binding _EmpNO}" Width="auto" />
+                                        <DataGridTextColumn Header="Date Filed"
+                            				Binding="{Binding _DateFiled}" Width="auto"/>
+                                        <DataGridTextColumn Header="Date Leave"
+                            				Binding="{Binding _LeaveDateFrom}" Width="auto"/>
+
+                                        <DataGridTextColumn Header="Total Days"
+                            				Binding="{Binding _LeaveTotal}" Width="auto"/>
+                                        <DataGridTextColumn Header="Reason"
+                            				Binding="{Binding _Reason}" Width="auto"/>
+                                        <DataGridTextColumn Header="Status"
+                            				Binding="{Binding _Status}" Width="auto"/>
+
+                                    </DataGrid.Columns>
+
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Paternity&#x9;">
+                            <Grid Background="#FFE5E5E5">
+                                <DataGrid  x:Name="dtPaternityLeave" 
+                            		SelectedItem="{Binding getMata, Mode=TwoWay}"
+                            		AutoGenerateColumns="False" CanUserAddRows="False"
+                            		IsReadOnly="True"
+                            		CanUserReorderColumns="False" 
+                            		Cursor="" Background="#FF323232"               	
+                            		GridLinesVisibility="Horizontal" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" Foreground="Black" SelectionMode="Single" >
+
+                                    <DataGrid.Columns>
+
+                                        <DataGridTextColumn  
+                            				Binding="{Binding _ctr}" Width="auto" />
+                                        <DataGridTextColumn Header="Employee Number"   
+                            				Binding="{Binding _EmpNO}" Width="auto" />
+                                        <DataGridTextColumn Header="Date Filed"
+                            				Binding="{Binding _DateFiled}" Width="auto"/>
+                                        <DataGridTextColumn Header="Date Leave"
+                            				Binding="{Binding _LeaveDateFrom}" Width="auto"/>
+
+                                        <DataGridTextColumn Header="Total Days"
+                            				Binding="{Binding _LeaveTotal}" Width="auto"/>
+                                        <DataGridTextColumn Header="Reason"
+                            				Binding="{Binding _Reason}" Width="auto"/>
+                                        <DataGridTextColumn Header="Status"
+                            				Binding="{Binding _Status}" Width="auto"/>
+
+                                    </DataGrid.Columns>
+
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</UserControl>

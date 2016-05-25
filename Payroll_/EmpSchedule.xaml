@@ -1,0 +1,164 @@
+﻿<UserControl 
+    x:Class="Payroll_.EmpSchedule"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Payroll_"
+        xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        mc:Ignorable="d" >
+    <Grid Background="White" >
+        <metro:Tile x:Name="TName" Content="" Height="37" Margin="0" Width="Auto" FontSize="24" IsEnabled="False" VerticalAlignment="Top" Background="#CC3C3C3C" BorderThickness="1"/>
+        <Label Content="Name" HorizontalAlignment="Left" Margin="10,91,0,0" Width="42" RenderTransformOrigin="0.929,0.519" Height="26" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="14"/>
+        <TextBox  x:Name="txtSearch" Height="26" Margin="88,91,0,0" TextWrapping="Wrap"  
+        	metro:TextBoxHelper.Watermark="Search ..."
+        	metro:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonCmdWithParameter, Mode=OneWay}"
+        	metro:TextBoxHelper.ButtonCommandParameter="{Binding Text, ElementName=test2}"
+        	Style="{DynamicResource SearchMetroTextBox}" TextChanged="txtSearch_TextChanged" HorizontalAlignment="Left" Width="213" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="14" />
+        <ComboBox x:Name="cmbSite" HorizontalAlignment="Left" Height="25" Margin="88,60,0,0" VerticalAlignment="Top" Width="213" DropDownOpened="cmbSite_DropDownOpened" DropDownClosed="cmbSite_DropDownClosed" SelectionChanged="cmbSite_SelectionChanged" FontFamily="Segoe UI" FontSize="14"/>
+        <Label Content="Site" HorizontalAlignment="Left" Margin="10,60,0,0" Width="32" RenderTransformOrigin="0.929,0.519" Height="26" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="14"/>
+        <!--<Button x:Name="btViewSchedule" Content="View Schedule" HorizontalAlignment="Left" Height="30" Margin="13,0,0,26" Width="118" Click="btViewSchedule_Click" VerticalAlignment="Bottom"/>-->
+        <Button x:Name="btCancel" Content="Cancel" Height="30" Margin="259,0,0,26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="118" Click="btCancel_Click" FontFamily="Segoe UI" FontSize="14"/>
+        <Button x:Name="btAddSchedule" Content="Add Schedule" Height="30" Margin="136,0,0,26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="118" Click="btAddSchedule_Click" IsEnabled="False" FontFamily="Segoe UI" FontSize="14"/>
+        <Button x:Name="btViewSched" Content="View Schedules" Height="30" Margin="13,0,0,26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="118" Click="btViewSched_Click" FontFamily="Segoe UI" FontSize="14"/>
+
+        <DataGrid  x:Name="dt" 
+        		SelectedItem="{Binding Attendance, Mode=TwoWay}"
+        		AutoGenerateColumns="False" CanUserAddRows="False"
+        		IsReadOnly="True"
+        		CanUserReorderColumns="False" CanUserSortColumns="False"
+        		AlternatingRowBackground="LightGray"     
+        		Style="{DynamicResource AzureDataGrid}" 
+        		Cursor="" Background="White" 
+        		GridLinesVisibility="Horizontal" 
+        		
+        		BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" Margin="10,134,10,61" SelectionChanged="dt_SelectionChanged" FontFamily="Segoe UI" FontSize="14">
+
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn 
+        				ElementStyle="{DynamicResource MetroDataGridCheckBox}"
+        				EditingElementStyle="{DynamicResource MetroDataGridCheckBox}"
+        				Header="IsSelected"
+        				Binding="{Binding IsSelected, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"/>
+                <DataGridTextColumn Header="EMP ID"
+        				Binding="{Binding _empID}" Width="auto"/>
+                <DataGridTextColumn Header="Name" 
+        				Binding="{Binding _Name}" Width="auto" />
+                <DataGridTextColumn Header="Schedule Count" 
+        				Binding="{Binding _SchedCount}" Width="auto" />
+
+            </DataGrid.Columns>
+
+
+        </DataGrid>
+        <DataGrid  x:Name="dtCurSched" 
+        		SelectedItem="{Binding Attendance, Mode=TwoWay}"
+        		AutoGenerateColumns="False" CanUserAddRows="False"
+        		IsReadOnly="True"
+                      Visibility="Hidden"
+        		CanUserReorderColumns="False" CanUserSortColumns="False"
+        		AlternatingRowBackground="LightGray"     
+        		Style="{DynamicResource AzureDataGrid}" 
+        		Cursor="" Background="White" 
+        		GridLinesVisibility="Horizontal" 
+        		
+        		BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" SelectionChanged="dt_SelectionChanged" Margin="10,134,10,61">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="EMP ID"
+        				Binding="{Binding _empID}" Width="auto"/>
+                <DataGridTextColumn Header="Name" 
+        				Binding="{Binding _Name}" Width="auto" />
+                <DataGridTextColumn Header="Effectivity" 
+        				Binding="{Binding _Effectivity}" Width="auto" />
+                <DataGridTextColumn Header="Schedule Name" 
+        				Binding="{Binding _SchedName}" Width="auto" />
+
+                <DataGridTextColumn Header="Schedule Type" 
+        				Binding="{Binding _SchedType}" Width="auto" />
+
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+        <Controls:Flyout Header="Actions"
+                        Name="FlyOut"
+                        IsOpen="false"
+                      
+                        Position="right"
+                        Theme="Adapt" 
+                        HorizontalAlignment="Right" 
+                        Width="484" Background="#FF363636" BorderThickness="1" FontSize="10" Margin="0,-1,0,0" ClosingFinished="FlyOut_ClosingFinished" metro:ControlsHelper.ContentCharacterCasing="Upper" >
+            <Grid Margin="10,0">
+                <Button x:Name="btAddNew" Content="..." Margin="0,39,105,0" Visibility="Visible" Height="26" VerticalAlignment="Top" Click="btAddNew_Click" HorizontalAlignment="Right" Width="33"/>
+                <DataGrid  x:Name="dtSched" 
+                	SelectedItem="{Binding Attendance, Mode=TwoWay}"
+                	AutoGenerateColumns="False" CanUserAddRows="False"
+                	IsReadOnly="True" 
+                	ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                	ScrollViewer.VerticalScrollBarVisibility="Visible"
+                	CanUserReorderColumns="False" CanUserSortColumns="False"
+                	AlternatingRowBackground="LightGray"     
+                	Style="{DynamicResource AzureDataGrid}" 
+                	Margin="0,114,10,10" 
+                	Cursor="" Background="White" 
+                	GridLinesVisibility="Horizontal" 
+                	BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" Visibility="Visible" SelectionChanged="dtSched_SelectionChanged" FontFamily="Segoe UI" FontSize="12" >
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn 
+                			ElementStyle="{DynamicResource MetroDataGridCheckBox}"
+                			EditingElementStyle="{DynamicResource MetroDataGridCheckBox}"
+                			Header="IsSelected"
+                			Binding="{Binding IsSelected, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"/>
+                        <DataGridTextColumn Header="Name"
+                			Binding="{Binding _SchedName}" Width="auto"/>
+                        <DataGridTextColumn Header="Schedule Type"
+                			Binding="{Binding _SchedType}" Width="auto"/>
+                        <!--<DataGridTextColumn Header="Sunday IN"
+                			Binding="{Binding _SunIN}" Width="auto"/>
+                        <DataGridTextColumn Header="Sunday OUT" 
+                			Binding="{Binding _SunOUT}" Width="auto"/>
+                        <DataGridTextColumn Header="Monday IN" 
+                			Binding="{Binding _MonIN}" Width="auto"/>
+                        <DataGridTextColumn Header="Monday OUT" 
+                			Binding="{Binding _MonOUT}" Width="auto"/>
+                        <DataGridTextColumn Header="Tuesday IN" 
+                			Binding="{Binding _TueIN}" Width="auto"/>
+                        <DataGridTextColumn Header="Tuesday OUT" 
+                			Binding="{Binding _TueOUT}" Width="auto"/>
+                        <DataGridTextColumn Header="Wednesday IN" 
+                			Binding="{Binding _WedIN}" Width="auto"/>
+                        <DataGridTextColumn Header="Wednesday OUT" 
+                			Binding="{Binding _WedOUT}" Width="auto"/>
+                        <DataGridTextColumn Header="Thursday IN" 
+                			Binding="{Binding _ThuIN}" Width="auto"/>
+                        <DataGridTextColumn Header="Thursday OUT" 
+                			Binding="{Binding _ThuOUT}" Width="auto"/>
+                        <DataGridTextColumn Header="Friday IN" 
+                			Binding="{Binding _FriIN}" Width="auto"/>
+                        <DataGridTextColumn Header="Friday OUT" 
+                			Binding="{Binding _FriOUT}" Width="auto"/>
+                        <DataGridTextColumn Header="Saturday IN" 
+                			Binding="{Binding _SatIN}" Width="auto"/>
+                        <DataGridTextColumn Header="Saturday OUT" 
+                			Binding="{Binding _SatOUT}" Width="auto"/>-->
+                    </DataGrid.Columns>
+
+
+                </DataGrid>
+                <Button x:Name="btEffectivity" Content="Save Schedule" Margin="0,70,10,0" Visibility="Visible" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Width="128" Click="btEffectivity_Click" IsEnabled="False"/>
+                <DatePicker x:Name="dtEffectivity" Margin="130,70,143,0" Height="29" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtSearchSched" Height="0" Margin="0,39,143,0" TextWrapping="Wrap" VerticalAlignment="Top" metro:TextBoxHelper.Watermark="Search ..." HorizontalAlignment="Right" Width="191" TextChanged="txtSearchSched_TextChanged" IsEnabled="False"/>
+                <Label Content="Schedule Name" HorizontalAlignment="Left" Margin="10,39,0,0" VerticalAlignment="Top" Foreground="#FFFBFBFB" FontFamily="Segoe UI" FontSize="14"/>
+                <Label Content="Effectivity Date" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Foreground="#FFFBFBFB" FontFamily="Segoe UI" FontSize="14"/>
+                <ComboBox x:Name="cmbSchedType" HorizontalAlignment="Right" Height="22" Margin="0,8,143,0" VerticalAlignment="Top" Width="191" DropDownClosed="cmbSchedType_DropDownClosed" SelectionChanged="cmbSchedType_SelectionChanged_1"/>
+                <Label Content="Schedule Type" Margin="0,8,354,0" VerticalAlignment="Top" FontSize="14" HorizontalAlignment="Right" Foreground="White"/>
+
+            </Grid>
+
+            <!--<ListBox x:Name="_ListEMPACTIVE" Height="222" Margin="11,0,10,0"/>-->
+        </Controls:Flyout>
+
+    </Grid>
+</UserControl>

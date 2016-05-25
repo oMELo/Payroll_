@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Payroll_.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Server" Type="System.String" Scope="User">
+      <Value Profile="(Default)">gXhH8NnkM/QW5IUjACDgMRxn6nZbJQyc</Value>
+    </Setting>
+    <Setting Name="Database" Type="System.String" Scope="User">
+      <Value Profile="(Default)">TwAzW8XScshn00ffLiLsQ9JfzbLvQd2w</Value>
+    </Setting>
+    <Setting Name="Mandaluyong" Type="System.String" Scope="User">
+      <Value Profile="(Default)">IfHugVRq8Eb4guCho2OvQBT3MDwkfZRV8aygaM/AmGY=</Value>
+    </Setting>
+    <Setting Name="Makati" Type="System.String" Scope="User">
+      <Value Profile="(Default)">RpeFMfToTp6iw3cr1Q893Z++WxO+6b1e</Value>
+    </Setting>
+    <Setting Name="ODBC" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ADMX</Value>
+    </Setting>
+    <Setting Name="AMS" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ADMXSRV04</Value>
+    </Setting>
+    <Setting Name="AMS_Username" Type="System.String" Scope="User">
+      <Value Profile="(Default)">sysdev</Value>
+    </Setting>
+    <Setting Name="AMS_Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Admx5299</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

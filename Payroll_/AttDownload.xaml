@@ -1,0 +1,48 @@
+﻿<Page
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:Custom="http://metro.mahapps.com/winfx/xaml/controls" x:Class="Payroll_.AttDownload" 
+      mc:Ignorable="d"
+	Title="AttDownload" >
+
+    <Grid Background="White"  >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <DataGrid  x:Name="dtSite" 
+			SelectedItem="{Binding Attendance, Mode=TwoWay}"
+			AutoGenerateColumns="False" CanUserAddRows="False"
+			VerticalGridLinesBrush="AliceBlue"
+			CanUserReorderColumns="False"
+			AlternatingRowBackground="LightGray"     
+			Style="{DynamicResource AzureDataGrid}" 
+			Margin="10,24,206,10" 
+			Cursor="" Background="White" GridLinesVisibility="All" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" SelectionChanged="dtSite_SelectionChanged" MouseDoubleClick="dtSite_MouseDoubleClick"   >
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn 
+					ElementStyle="{DynamicResource MetroDataGridCheckBox}"
+					EditingElementStyle="{DynamicResource MetroDataGridCheckBox}"
+					Header="Selected Site"
+					Binding="{Binding IsSelected, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"/>
+
+                <DataGridTextColumn
+					IsReadOnly="True"
+					Binding="{Binding _ID}" Width="auto"/>
+
+                <DataGridTextColumn   Header="Site"  
+					IsReadOnly="True"
+					Binding="{Binding _Description}" Width="auto"/>
+
+
+
+            </DataGrid.Columns>
+
+        </DataGrid>
+        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btDOWNLOAD" Content="DOWNLOAD" HorizontalAlignment="Right" Height="5" Margin="0,86,10,0" VerticalAlignment="Top" Width="175" Click="btDOWNLOAD_Click"/>
+        <DatePicker x:Name="dtDate" HorizontalAlignment="Right" Height="23" Margin="0,55,10,0" VerticalAlignment="Top" Width="175"/>
+
+    </Grid>
+</Page>

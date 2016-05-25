@@ -1,0 +1,28 @@
+﻿<metro:MetroWindow x:Class="Payroll_.frmDateTime"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Payroll_"
+        xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        GlowBrush="{DynamicResource AccentColorBrush}"
+        Title="Date and Time" Height="247" Width="475" Topmost="True" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" ResizeMode="NoResize" IsCloseButtonEnabled="False" IsMaxRestoreButtonEnabled="False" IsMinButtonEnabled="False">
+    <Grid>
+        <DatePicker x:Name="dtFrom" HorizontalAlignment="Left" Height="22" Margin="109,78,0,0" VerticalAlignment="Top" Width="192" SelectedDateFormat="Short" CalendarClosed="dtFrom_CalendarClosed" />
+        <Label Content="Date From" HorizontalAlignment="Left" Height="26" Margin="26,78,0,0" VerticalAlignment="Top" Width="78"/>
+        <Label Content="Date To" HorizontalAlignment="Left" Height="26" Margin="26,109,0,0" VerticalAlignment="Top" Width="78"/>
+        <DatePicker x:Name="dtTo" HorizontalAlignment="Left" Height="22" Margin="109,109,0,0" VerticalAlignment="Top" Width="192" CalendarClosed="dtTo_CalendarClosed"/>
+        <Label Content=":" HorizontalAlignment="Left" Height="26" Margin="372,78,0,0" VerticalAlignment="Top" Width="14" FontWeight="Bold"/>
+        <Label Content=":" HorizontalAlignment="Left" Height="26" Margin="372,109,0,0" VerticalAlignment="Top" Width="14" FontWeight="Bold"/>
+        <ComboBox x:Name="cmbDtFromHH" HorizontalAlignment="Left" Height="26" Margin="317,78,0,0" VerticalAlignment="Top" Width="55" DropDownClosed="cmbDtFromHH_DropDownClosed"/>
+        <ComboBox x:Name="cmbDtToHH" HorizontalAlignment="Left" Height="26" Margin="317,109,0,0" VerticalAlignment="Top" Width="55" DropDownClosed="cmbDtToHH_DropDownClosed"/>
+        <ComboBox x:Name="cmbDtFromMM" HorizontalAlignment="Left" Height="26" Margin="386,78,0,0" VerticalAlignment="Top" Width="55" DropDownClosed="cmbDtFromMM_DropDownClosed"/>
+        <ComboBox x:Name="cmbDtToMM" HorizontalAlignment="Left" Height="26" Margin="386,109,0,0" VerticalAlignment="Top" Width="55" DropDownClosed="cmbDtToMM_DropDownClosed"/>
+        <Button x:Name="btOK" Content="OK" HorizontalAlignment="Left" Height="23" Margin="268,178,0,0" VerticalAlignment="Top" Width="84" Click="btOK_Click" FontSize="12"/>
+        <Label Content="HH" HorizontalAlignment="Left" Height="26" Margin="329,47,0,0" VerticalAlignment="Top" Width="32" FontWeight="Bold"/>
+        <Label Content="MM" HorizontalAlignment="Left" Height="26" Margin="396,47,0,0" VerticalAlignment="Top" Width="32" FontWeight="Bold"/>
+        <Button x:Name="btCancel" Content="Cancel" HorizontalAlignment="Left" Height="23" Margin="357,178,0,0" VerticalAlignment="Top" Width="84" Click="btCancel_Click" FontSize="12"/>
+
+    </Grid>
+</metro:MetroWindow>
