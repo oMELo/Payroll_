@@ -81,7 +81,7 @@ namespace Payroll_
 
         private async void btProceed_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Sample");
+         
             int i = 0;
             object item = dtPperiod.SelectedItems[i];
             using (Database _Database = new Database())
