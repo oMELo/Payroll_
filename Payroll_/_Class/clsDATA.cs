@@ -51,20 +51,86 @@ namespace Payroll_
         public TimeSpan _SatIN { get; set; }
         public TimeSpan _SatOUT { get; set; }
     }
-    public class clsSchedule
+    public class NameToBrushConverter : IValueConverter
     {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            string input = value as string;
+            switch (input)
+            {
+                case "John":
+                    return Brushes.LightGreen;
+                default:
+                    return DependencyProperty.UnsetValue;
+            }
+        }
 
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+    public class clsSchedule: INotifyPropertyChanged
+    {
+        //public string _SchedCount;
+        public string SchedCount {get;set;}
+        //{
+        //    get { return _SchedCount; }
+        //    set 
+        //    {
+        //        _SchedCount = value;
+        //        NotifyPropertyChanged("SchedCount");
+        //    }
+        //}
+        private string _image;
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
+        #region Private Helpers
+
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #endregion
         public static List<clsSchedule> _EmpSchedList = new List<clsSchedule>();
         public static List<clsSchedule> _ScheduleList = new List<clsSchedule>();
         public int _empID { get; set; }
         public string _Name { get; set; }
-        public int _SchedCount { get; set; }
+        //public int _SchedCount { get; set; }
         public string _SchedType { get; set; }
         public static Int32 _SchedID { get; set; }
         public static Int32 _SelempID { get; set; }
         public static Int32 _SelSchedID { get; set;  }
         public string _SchedName { get; set; }
+        public string _JobTitle { get; set; }
+        public string _Department { get; set; }
         public string _Effectivity { get; set; }
+        public string Image
+        {
+            get { return _image; }
+            set
+            {
+                _image = value;
+                NotifyPropertyChanged("Image");
+            }
+        }
+        //public string Image
+        //{
+        //    get
+        //    {
+        //        if (IsRead)
+        //            return "read.png";
+        //        return "unread.png";
+        //    }
+        //}
     }
 
     public class clsCurSchedule
@@ -250,15 +316,7 @@ namespace Payroll_
    public class clsPPeriod : INotifyPropertyChanged
    {
        private string _image;
-       public string Image
-       {
-           get { return _image; }
-           set
-           {
-               _image = value;
-               NotifyPropertyChanged("Image");
-           }
-       }
+       
        #region INotifyPropertyChanged Members
 
        public event PropertyChangedEventHandler PropertyChanged;
@@ -276,6 +334,7 @@ namespace Payroll_
        }
 
        #endregion
+
        public Int32 _ID { get; set; }
        public DateTime _pPeriod { get; set; }
        public DateTime _pStartDate { get; set; }
@@ -284,6 +343,17 @@ namespace Payroll_
        public DateTime _mEndDate { get; set; }
        public static Int32 _SelID { get; set; }
        public static List<clsPPeriod> _pPeriodList = new List<clsPPeriod>();
+       
+       public string Image
+       {
+           get { return _image; }
+           set
+           {
+               _image = value;
+               NotifyPropertyChanged("Image");
+           }
+       }
+     
    }
    public class clsAttCal
    {

@@ -81,7 +81,7 @@
     
         <Controls:Flyout Header="Actions"
                         Name="FlyOut"
-                        IsOpen="false"
+                        IsOpen="False"
                        
                         Position="right"
                         Theme="Adapt" 

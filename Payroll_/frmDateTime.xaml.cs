@@ -152,7 +152,7 @@ namespace Payroll_
 
         private void btCancel_Click(object sender, RoutedEventArgs e)
         {
-            //clsStatic._Status = "CANCEL";
+            clsStatic._Status = "CANCEL";
             this.Close();
 
 

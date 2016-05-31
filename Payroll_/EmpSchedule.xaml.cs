@@ -24,14 +24,16 @@ namespace Payroll_
     /// Interaction logic for EmpSchedule.xaml
     /// </summary>
     /// 
-    public partial class EmpSchedule 
+    public partial class EmpSchedule : UserControl
     {
 
+       
         string Site="";
      
         public EmpSchedule()
         {
             InitializeComponent();
+        
             dtEffectivity.SelectedDate = DateTime.Now;
             fillOtherCMB _CMBData = new fillOtherCMB();
             _CMBData.getCMB(cmbSchedType, "SELECT * FROM admx_hrisp.pp_scheduletype");
@@ -39,12 +41,21 @@ namespace Payroll_
         public void getEMP(string _Condition)
         {
 
-            SEARCHLIST("select fld_IDNumber as _EmpID , concat(ifnull(fld_FirstName,'') ,' ', ifnull(fld_MiddleName,'') , ' ' ,ifnull(fld_LastName,'')) as _Name, " +
-                            "(select Count( SchedID) from admx_hrisp.pp_empschedules where empNO = fld_idnumber ) as Count from  admx_hrisp.tbl_empmasterfile " + _Condition + " order by fld_FirstName");
-            dt.ItemsSource = "";
-            dt.ItemsSource = clsSchedule._EmpSchedList;
-           
-           
+            //SEARCHLIST("select E.fld_IDNumber as _EmpID , concat(ifnull(fld_FirstName,'') ,' ', ifnull(fld_MiddleName,'') , ' ' ,ifnull(fld_LastName,'')) as _Name, " +
+            //                "(select Count( SchedID) from admx_hrisp.pp_empschedules where empNO = E.fld_idnumber ) as Count ,S.fld_StaticParamDesc as Department,S2.fld_StaticParamDesc as JobTitle " +
+            //                "from  admx_hrisp.tbl_empmasterfile  E " +
+            //                "left join admx_hrisp.tbl_workassignment W " +
+            //                "on E.fld_idnumber = W.fld_idnumber " +
+            //                "left join admx_hrisp.tbl_staticparam S  " +
+            //                "on S.fld_staticparamid = W.fld_spidDepartment " +
+            //                "left join admx_hrisp.tbl_workassignment W2 " +
+            //                "on E.fld_idnumber = W2.fld_idnumber " +
+            //                "left join admx_hrisp.tbl_staticparam S2  " +
+            //                "on S2.fld_staticparamid = W2.fld_spidJobTitle " + _Condition + " order by E.fld_FirstName");
+            //dt.ItemsSource = "";
+            //dt.ItemsSource = clsSchedule._EmpSchedList;
+
+            
         }
 
        
@@ -56,8 +67,10 @@ namespace Payroll_
                            "inner join admx_hrisp.pp_scheduletype T on S.TypeID = T.TypeID where ES.EmpNO= " + _Condition + " order by ES.Effectivity desc");
         
         }
+       
         public List<clsSchedule> SEARCHLIST(String _Query)
         {
+
             using (Database _Database = new Database())
             {
                 clsSchedule._EmpSchedList.Clear();
@@ -65,12 +78,15 @@ namespace Payroll_
                 while (_Database.Reader.Read())
                 {
                     {
-
+                        //Content = "{StaticResource appbar_billing}";
                         clsSchedule._EmpSchedList.Add(new clsSchedule()
                         {
+                             Image = "Images/Payment.ico",
                             _empID = Convert.ToInt32(_Database.Reader["_EmpID"].ToString()),
                             _Name = Convert.ToString(_Database.Reader["_Name"].ToString()),
-                            _SchedCount = Convert.ToInt32(_Database.Reader["Count"].ToString())
+                             SchedCount = Convert.ToString(_Database.Reader["Count"].ToString()),
+                            _JobTitle = Convert.ToString(_Database.Reader["Jobtitle"].ToString()),
+                            _Department =Convert.ToString(_Database.Reader["Department"].ToString())
                         });
 
                     } 
@@ -304,8 +320,8 @@ namespace Payroll_
         {
 
         }
-        
 
+       
 
     }
 }

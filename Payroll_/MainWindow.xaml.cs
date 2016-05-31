@@ -28,13 +28,36 @@ namespace Payroll_
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow 
+    public partial class MainWindow :Window
     {
         public MainWindow()
         {
             InitializeComponent();
-            Database _database = new Database();
+            DataContext = new VM();
+            //Database _database = new Database();
           
         }
+        //*****************************************
+        public class VM
+        {
+            public List<myItem> Source { get; set; }
+
+            public VM()
+            {
+                Source = new List<myItem>();
+                Source.Add(new myItem { Field1 = "some Text", Field2 = "some other Text", ColorSwitch = false });
+                Source.Add(new myItem { Field1 = "some Text", Field2 = "some other Text", ColorSwitch = false });
+                Source.Add(new myItem { Field1 = "some Text", Field2 = "some other Text", ColorSwitch = true });
+                Source.Add(new myItem { Field1 = "some Text", Field2 = "some other Text", ColorSwitch = false });
+                Source.Add(new myItem { Field1 = "some Text", Field2 = "some other Text", ColorSwitch = true });
+            }
+        }
+        public class myItem
+        {
+            public string Field1 { get; set; }
+            public string Field2 { get; set; }
+            public bool ColorSwitch { get; set; }
+        }
+        //*****************************************
     }
 }

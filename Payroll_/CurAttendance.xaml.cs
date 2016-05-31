@@ -61,6 +61,15 @@ namespace Payroll_
            "or (" + _Condition + " _DateOut IS NULL and  DATE_FORMAT(_DateIn,'%m/%d/%Y') >= '" + String.Format("{0:MM/dd/yyyy}", Convert.ToDateTime(clsStatic._GeneratedFromTime)) + "' and  DATE_FORMAT(_DateIn,'%m/%d/%Y') <= '" + String.Format("{0:MM/dd/yyyy}", Convert.ToDateTime(clsStatic._GeneratedToTime)) + "' )  " +
            "or (" + _Condition + " _DateIn IS NULL and DATE_FORMAT(_DateOut,'%m/%d/%Y')  >= '" + String.Format("{0:MM/dd/yyyy}", Convert.ToDateTime(clsStatic._GeneratedFromTime)) + "' and DATE_FORMAT(_DateOut,'%m/%d/%Y')  <= '" + String.Format("{0:MM/dd/yyyy}", Convert.ToDateTime(clsStatic._GeneratedToTime)) + "' ) " +
            "order by  CONCAT(fld_FirstName ,' ' ,fld_MiddleName,' ',  fld_LastName ),_DateIn ";
+
+            //Attendance("SELECT _ID,_EmpID, concat(ifnull(fld_FirstName,'') ,' ', ifnull(fld_MiddleName,'') , ' ' ,ifnull(fld_LastName,'')) as _Name,_DateIn,_DateOut  " +
+            //        "FROM admx_hrisp.tbl_EmpMasterFile  M " +
+            //        "inner join admx_hrisp.pp_EmpClocks E  on fld_IDNumber = _EmpID  where _EmpID IN ('20130038') " +
+            //        "and dATE_FORMAT(_DateIn,'%Y-%m-%d') >= '2016-05-06' AND dATE_FORMAT(_DateIn,'%Y-%m-%d') <= '2016-05-27' " +
+            //        "and dATE_FORMAT(_DateoUT,'%Y-%m-%d') >= '2016-05-06' AND dATE_FORMAT(_DateoUT,'%Y-%m-%d') <= '2016-05-27' " +
+            //        "OR (_EmpID IN ('20130038') AND dATE_FORMAT(_DateIn,'%Y-%m-%d') >= '2016-05-06' AND dATE_FORMAT(_DateIn,'%Y-%m-%d') <= '2016-05-27'  AND _DateoUT IS NULL) " +
+            //        "OR (_EmpID IN ('20130038') AND dATE_FORMAT(_DateoUT,'%Y-%m-%d') >= '2016-05-06' AND dATE_FORMAT(_DateoUT,'%Y-%m-%d') <= '2016-05-27' AND _DateIn IS NULL)");
+
             Attendance(tmpSql);
             dt.ItemsSource = "";
             dt.ItemsSource = clsAttendance._Attendance;
@@ -125,7 +134,7 @@ namespace Payroll_
 
             if (clsStatic._Status.ToString() == "CANCEL") { btCANCEL_Click(null, null); return; }
            //dt.SelectionUnit
-           
+
             getData("_EmpID in (" + toARR(eID) + ") and ");
             btGenerate.IsEnabled = false;
 
@@ -161,7 +170,7 @@ namespace Payroll_
                     {
 
                         object item = dt.SelectedItems[i];
-                        eID = eID + (dt.SelectedCells[2].Column.GetCellContent(item) as TextBlock).Text + ",";
+                        eID = eID + "'" + (dt.SelectedCells[2].Column.GetCellContent(item) as TextBlock).Text + "',";
                         empName.Add((dt.SelectedCells[3].Column.GetCellContent(item) as TextBlock).Text);
                         btGenerate.IsEnabled = true;
 
@@ -220,7 +229,7 @@ namespace Payroll_
                 clsStatic._dtToTime = (dt.SelectedCells[5].Column.GetCellContent(item) as TextBlock).Text;
                 frmDateTime _frmDateTime = new frmDateTime();
                 _frmDateTime.ShowDialog();
-                if (clsStatic._Status == "CANCEL") { btCANCEL_Click(null, null); return; }
+                if (clsStatic._Status == "CANCEL") { btEdit.Content = "EDIT" ; return; }
                 
                 btEdit.Content = "UPDATE";
                 mnuEdit.Header = btEdit.Content;
@@ -315,7 +324,7 @@ namespace Payroll_
 
         }
         private void txtSearch_TextChanged(object sender, TextChangedEventArgs e)
-        {
+        {  
             string temp="";
             if (cmbSite.Text == "") Site = " where ";
             else temp = " and ";

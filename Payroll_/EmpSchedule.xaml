@@ -8,7 +8,9 @@
         xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d" >
+    
     <Grid Background="White" >
+        
         <metro:Tile x:Name="TName" Content="" Height="37" Margin="0" Width="Auto" FontSize="24" IsEnabled="False" VerticalAlignment="Top" Background="#CC3C3C3C" BorderThickness="1"/>
         <Label Content="Name" HorizontalAlignment="Left" Margin="10,91,0,0" Width="42" RenderTransformOrigin="0.929,0.519" Height="26" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="14"/>
         <TextBox  x:Name="txtSearch" Height="26" Margin="88,91,0,0" TextWrapping="Wrap"  
@@ -23,35 +25,76 @@
         <Button x:Name="btAddSchedule" Content="Add Schedule" Height="30" Margin="136,0,0,26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="118" Click="btAddSchedule_Click" IsEnabled="False" FontFamily="Segoe UI" FontSize="14"/>
         <Button x:Name="btViewSched" Content="View Schedules" Height="30" Margin="13,0,0,26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="118" Click="btViewSched_Click" FontFamily="Segoe UI" FontSize="14"/>
 
-        <DataGrid  x:Name="dt" 
-        		SelectedItem="{Binding Attendance, Mode=TwoWay}"
-        		AutoGenerateColumns="False" CanUserAddRows="False"
-        		IsReadOnly="True"
-        		CanUserReorderColumns="False" CanUserSortColumns="False"
-        		AlternatingRowBackground="LightGray"     
-        		Style="{DynamicResource AzureDataGrid}" 
-        		Cursor="" Background="White" 
-        		GridLinesVisibility="Horizontal" 
-        		
-        		BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" Margin="10,134,10,61" SelectionChanged="dt_SelectionChanged" FontFamily="Segoe UI" FontSize="14">
+        <DataGrid x:Name="dt" ItemsSource="{Binding Source}">
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="Foreground" Value="Red"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ColorSwitch}" Value="false">
+                            <Setter Property="Foreground" Value="Green"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+        </DataGrid>
+        <!--<DataGrid  x:Name="dt" 
+        	ItemsSource="{Binding Source}"
+            CanUserAddRows="False"
+        	IsReadOnly="True"
+        	CanUserReorderColumns="False" 
+            CanUserSortColumns="False"
+        	Cursor="" 
+            Background="White" 
+        	GridLinesVisibility="Horizontal" 	
+        	BorderThickness="1,0,0,0"  
+            SelectionMode="Single" 
+            Margin="10,134,10,61" 
+            SelectionChanged="dt_SelectionChanged" 
+            FontFamily="Segoe UI" 
+            FontSize="14">
+            --><!--<DataGrid x:Name="dt" ItemsSource="{Binding Source}">--><!--
+                <DataGrid.Resources>
+                    <Style TargetType="{x:Type DataGridRow}">
+                        <Setter Property="Foreground" Value="Red"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ColorSwitch}" Value="false">
+                                <Setter Property="Foreground" Value="Green"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Resources>
+            </DataGrid>-->
+            <!--</DataGrid>-->
 
-            <DataGrid.Columns>
+            <!--<DataGrid.Columns>
                 <DataGridCheckBoxColumn 
         				ElementStyle="{DynamicResource MetroDataGridCheckBox}"
         				EditingElementStyle="{DynamicResource MetroDataGridCheckBox}"
         				Header="IsSelected"
+                   
         				Binding="{Binding IsSelected, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"/>
+                <DataGridTemplateColumn  Width="SizeToCells" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            --><!--image--><!--
+                            <Image Height="20" Source="{Binding Image}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="EMP ID"
         				Binding="{Binding _empID}" Width="auto"/>
                 <DataGridTextColumn Header="Name" 
         				Binding="{Binding _Name}" Width="auto" />
-                <DataGridTextColumn Header="Schedule Count" 
-        				Binding="{Binding _SchedCount}" Width="auto" />
+                <DataGridTextColumn Header="Schedule Count"
+                        Binding="{Binding SchedCount}" Width="auto" />
+                <DataGridTextColumn Header="Jobtitle" 
+        				Binding="{Binding _JobTitle}" Width="auto" />
+                <DataGridTextColumn Header="Department" 
+        				Binding="{Binding _Department}" Width="auto" />
+            </DataGrid.Columns>-->
 
-            </DataGrid.Columns>
 
-
-        </DataGrid>
+        <!--</DataGrid>-->
         <DataGrid  x:Name="dtCurSched" 
         		SelectedItem="{Binding Attendance, Mode=TwoWay}"
         		AutoGenerateColumns="False" CanUserAddRows="False"
@@ -84,8 +127,8 @@
 
         <Controls:Flyout Header="Actions"
                         Name="FlyOut"
-                        IsOpen="false"
-                      
+                        IsOpen="False"
+                    
                         Position="right"
                         Theme="Adapt" 
                         HorizontalAlignment="Right" 

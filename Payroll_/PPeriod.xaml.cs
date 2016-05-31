@@ -70,7 +70,7 @@ namespace Payroll_
                         _pEndDate = Convert.ToDateTime(String.Format("{0:MM/dd/yyyy}",MyReader["EndDate"].ToString())),
                         _mStartDate = Convert.ToDateTime(String.Format("{0:MM/dd/yyyy}",MyReader["MataStart"].ToString())),
                         _mEndDate = Convert.ToDateTime(String.Format("{0:MM/dd/yyyy}",MyReader["MataEnd"].ToString())),
-                        Image = @"C:\Users\rppagunsan\Desktop\Payroll\NEW (aRies)\(aRies)\Payroll+\Icon\Payment.ico"
+                        Image = "Images/Payment.ico"
                     });
                  
                 } MyReader.Close();
@@ -195,11 +195,9 @@ namespace Payroll_
                     await TaskEx.Delay(50);
                                       
                 } _Database.Reader.Close();
-                if (_Ins.Length > 0)
-                {
-                    using (Database _DBins = new Database()) _DBins.Execute("INSERT INTO admx_hrisp.pp_tempattendances ( PayrollId,EmployeeNo,Total,Regular,LegalHoliday,OTRegular,OTRestday,OTLegalHoliday,OTSpecialHoliday,Absences,Tardiness,VL,SL,LWOP) VALUES " +
-                                                                                _Ins.PadRight(_Ins.Length - 1).Substring(0, _Ins.Length - 1).Trim());
-                }
+                if (_Ins.Length > 0) using (Database _DBins = new Database()) _DBins.Execute("INSERT INTO admx_hrisp.pp_tempattendances ( PayrollId,EmployeeNo,Total,Regular,LegalHoliday,OTRegular,OTRestday,OTLegalHoliday,OTSpecialHoliday,Absences,Tardiness,VL,SL,LWOP) VALUES " +
+                                     _Ins.PadRight(_Ins.Length - 1).Substring(0, _Ins.Length - 1).Trim());
+                
                 }
             await controller.CloseAsync();
             CalAttendance _CalAtt = new CalAttendance();

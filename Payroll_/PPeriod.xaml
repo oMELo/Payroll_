@@ -9,13 +9,14 @@
         GlowBrush="{DynamicResource AccentColorBrush}" Height="430.338" Width="836.462" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" ResizeMode="NoResize">
     <Grid Margin="0,0,2,3">
         <DataGrid  x:Name="dtPperiod" 
-    		SelectedItem="{Binding Attendance, Mode=TwoWay}"
+    		
+            ItemsSource="{Binding _pPeriodList}"
     		AutoGenerateColumns="False" CanUserAddRows="False"
     		IsReadOnly="True"
     		CanUserReorderColumns="False"
     		AlternatingRowBackground="LightGray"     
     		Style="{DynamicResource AzureDataGrid}" 
-    		Margin="10,49,11,89" 
+    		Margin="10,35,11,103" 
     		Cursor="" Background="White" GridLinesVisibility="Horizontal" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" SelectionChanged="dtPperiod_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn 
@@ -26,7 +27,7 @@
                 <DataGridTemplateColumn  Width="SizeToCells" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Height="20" Source="{Binding Image}" />
+                            <Image Height="20" Source="{Binding  Image}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
