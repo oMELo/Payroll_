@@ -66,6 +66,7 @@ namespace Payroll_
                             _ID = Convert.ToInt32(_Reader["ID"].ToString()),
                             _Fname = Convert.ToString(_Reader["FullName"].ToString()),
                             _EmpID = Convert.ToInt32(_Reader["EmployeeNo"].ToString()),
+                            _EStat = Convert.ToString(_Reader["EmpStatus"].ToString()),
                             _Mata = Convert.ToDecimal(_Reader["Total"].ToString()),
                             _Regular = Convert.ToDecimal(_Reader["Regular"].ToString()),
                             _LegHoliday = Convert.ToDecimal(_Reader["Legalholiday"].ToString()),
@@ -281,44 +282,46 @@ namespace Payroll_
                 oSheet.Cells[1, 1] = "PayrollID";
                 oSheet.Cells[1, 2] = "Employee Name";
                 oSheet.Cells[1, 3] = "EmployeeNo";
-                oSheet.Cells[1, 4] = "Total";
-                oSheet.Cells[1, 5] = "Regular";
-                oSheet.Cells[1, 6] = "LegalHoliday";
-                oSheet.Cells[1, 7] = "OTRegular";
-                oSheet.Cells[1, 8] = "OTRestday";
-                oSheet.Cells[1, 9] = "OTLegalHoliday";
-                oSheet.Cells[1, 10] = "OTSpecialHoliday";
-                oSheet.Cells[1, 11] = "Absences";
-                oSheet.Cells[1, 12] = "Tardiness";
-                oSheet.Cells[1, 13] = "VL";
-                oSheet.Cells[1, 14] = "SL";
-                oSheet.Cells[1, 15] = "LWOP";
+                oSheet.Cells[1, 4] = "Employee Status";
+                oSheet.Cells[1, 5] = "Total";
+                oSheet.Cells[1, 6] = "Regular";
+                oSheet.Cells[1, 7] = "LegalHoliday";
+                oSheet.Cells[1, 8] = "OTRegular";
+                oSheet.Cells[1, 9] = "OTRestday";
+                oSheet.Cells[1, 10] = "OTLegalHoliday";
+                oSheet.Cells[1, 11] = "OTSpecialHoliday";
+                oSheet.Cells[1, 12] = "Absences";
+                oSheet.Cells[1, 13] = "Tardiness";
+                oSheet.Cells[1, 14] = "VL";
+                oSheet.Cells[1, 15] = "SL";
+                oSheet.Cells[1, 16] = "LWOP";
 
-                oSheet.get_Range("A1", "O1").Font.Bold = true;
+                oSheet.get_Range("A1", "P1").Font.Bold = true;
            
 
-                string[,] EmployeePayroll = new string[clsAttCal._AttCal.Count, 15];
+                string[,] EmployeePayroll = new string[clsAttCal._AttCal.Count, 16];
                 for (int i = 0; i < clsAttCal._AttCal.Count; i++)
                 {
                     EmployeePayroll[i, 0] = clsPPeriod._SelID.ToString();
                     EmployeePayroll[i, 1] = clsAttCal._AttCal[i]._Fname.ToString();
                     EmployeePayroll[i, 2] = clsAttCal._AttCal[i]._EmpID.ToString();
-                    EmployeePayroll[i, 3] = clsAttCal._AttCal[i]._Mata.ToString();
-                    EmployeePayroll[i, 4] = clsAttCal._AttCal[i]._Regular.ToString();
-                    EmployeePayroll[i, 5] = clsAttCal._AttCal[i]._LegHoliday.ToString();
-                    EmployeePayroll[i, 6] = clsAttCal._AttCal[i]._OTRegular.ToString();
-                    EmployeePayroll[i, 7] = clsAttCal._AttCal[i]._OTRestDay.ToString();
-                    EmployeePayroll[i, 8] = clsAttCal._AttCal[i]._OTLegHoliday.ToString();
-                    EmployeePayroll[i, 9] = clsAttCal._AttCal[i]._OTSpeHoliday.ToString();
-                    EmployeePayroll[i, 10] = clsAttCal._AttCal[i]._Absences.ToString();
-                    EmployeePayroll[i, 11] = clsAttCal._AttCal[i]._Late.ToString();
-                    EmployeePayroll[i, 12] = clsAttCal._AttCal[i]._VL.ToString();
-                    EmployeePayroll[i, 13] = clsAttCal._AttCal[i]._SL.ToString();
-                    EmployeePayroll[i, 14] = (clsAttCal._AttCal[i]._LWOP.ToString().Length == 0 ? "" : clsAttCal._AttCal[i]._LWOP.ToString()) ;
+                    EmployeePayroll[i, 3] = clsAttCal._AttCal[i]._EStat.ToString();
+                    EmployeePayroll[i, 4] = clsAttCal._AttCal[i]._Mata.ToString();
+                    EmployeePayroll[i, 5] = clsAttCal._AttCal[i]._Regular.ToString();
+                    EmployeePayroll[i, 6] = clsAttCal._AttCal[i]._LegHoliday.ToString();
+                    EmployeePayroll[i, 7] = clsAttCal._AttCal[i]._OTRegular.ToString();
+                    EmployeePayroll[i, 8] = clsAttCal._AttCal[i]._OTRestDay.ToString();
+                    EmployeePayroll[i, 9] = clsAttCal._AttCal[i]._OTLegHoliday.ToString();
+                    EmployeePayroll[i, 10] = clsAttCal._AttCal[i]._OTSpeHoliday.ToString();
+                    EmployeePayroll[i, 11] = clsAttCal._AttCal[i]._Absences.ToString();
+                    EmployeePayroll[i, 12] = clsAttCal._AttCal[i]._Late.ToString();
+                    EmployeePayroll[i, 13] = clsAttCal._AttCal[i]._VL.ToString();
+                    EmployeePayroll[i, 14] = clsAttCal._AttCal[i]._SL.ToString();
+                    EmployeePayroll[i, 15] = (clsAttCal._AttCal[i]._LWOP.ToString().Length == 0 ? "'" : clsAttCal._AttCal[i]._LWOP.ToString()) ;
 
                 }
 
-                oSheet.get_Range("A2", Convert.ToString(String.Format("{0}", "O" + (clsAttCal._AttCal.Count + 1)))).Value2 = EmployeePayroll;
+                oSheet.get_Range("A2", Convert.ToString(String.Format("{0}", "P" + (clsAttCal._AttCal.Count + 1)))).Value2 = EmployeePayroll;
 
 
                 oRng = oSheet.get_Range("A1", "N1");
@@ -373,6 +376,7 @@ namespace Payroll_
                 dt.Columns.Add("PayrollID");
                 dt.Columns.Add("Employee Name");
                 dt.Columns.Add("EmployeeNo");
+                dt.Columns.Add("Employee Status");
                 dt.Columns.Add("Total");
                 dt.Columns.Add("Regular");
                 dt.Columns.Add("LegalHoliday");
@@ -405,7 +409,7 @@ namespace Payroll_
                         if (Convert.ToInt32(_DBPayroll.Reader["Count"].ToString()) > 0)
                         {
 
-                            _DBPayroll.Execute("UPDATE admx_hrisp.pp_tempattendances set " +
+                                await Task.Run(() => _DBPayroll.Execute("UPDATE admx_hrisp.pp_tempattendances set " +
                                    "Total=" + dr[3] +
                                   ",Regular=" + dr[4] +
                                   ",LegalHoliday=" + dr[5] +
@@ -418,13 +422,13 @@ namespace Payroll_
                                   ",VL=" + dr[12] +
                                   ",SL= " + dr[13] +
                                   ",LWOP= '" + dr[14] +
-                                  "' where PayrollId = " + dr[0] + " and EmployeeNo = " + dr[2]);
+                                  "' where PayrollId = " + dr[0] + " and EmployeeNo = " + dr[2]));
                             _Updated++;
 
                         }
                         else
                         {
-                            _DBPayroll.Execute("INSERT INTO admx_hrisp.pp_tempattendances ( PayrollId,EmployeeNo,Total,Regular,LegalHoliday,OTRegular,OTRestday,OTLegalHoliday,OTSpecialHoliday,Absences,Tardiness,VL,SL) VALUES (" + clsPPeriod._SelID.ToString() + "," + dr[2] + "," + dr[3] + "," + dr[4] + "," + dr[5] + "," + dr[6] + "," + dr[7] + "," + dr[8] + "," + dr[9] + "," + dr[10] + "," + dr[11] + "," + dr[12] + "," + dr[13] + ")");
+                            await Task.Run(() => _DBPayroll.Execute("INSERT INTO admx_hrisp.pp_tempattendances ( PayrollId,EmployeeNo,Total,Regular,LegalHoliday,OTRegular,OTRestday,OTLegalHoliday,OTSpecialHoliday,Absences,Tardiness,VL,SL) VALUES (" + clsPPeriod._SelID.ToString() + "," + dr[2] + "," + dr[3] + "," + dr[4] + "," + dr[5] + "," + dr[6] + "," + dr[7] + "," + dr[8] + "," + dr[9] + "," + dr[10] + "," + dr[11] + "," + dr[12] + "," + dr[13] + "," + dr[14] + ")"));
                             _Inserted++;
                         }
                         controller.SetMessage("Employee ID : " + Convert.ToString( dr[2]));
@@ -449,19 +453,21 @@ namespace Payroll_
             
                 using (Database _Database = new Database())
                 {
+                    // "Total="+ _clsTotalEmpCalc.getMATA(clsChecking._SelEmpNO,  clsChecking._StartMata, clsChecking._EndMata) +
                                 var _Val = _clsTotalEmpCalc.get_Regular_Absences_Late(clsChecking._SelEmpNO, clsChecking._StartMata, clsChecking._EndMata);
                                 var _LeaveVal = _clsTotalEmpCalc.getLeaves(clsChecking._SelEmpNO);
-                                _Database.Execute("UPDATE admx_hrisp.pp_tempattendances SET Total="+ _clsTotalEmpCalc.getMATA(clsChecking._SelEmpNO,  clsChecking._StartMata, clsChecking._EndMata) +
-                                        ", Regular=" + _Val.Item1 +
+                                _Database.Execute("UPDATE admx_hrisp.pp_tempattendances SET " + 
+                                        "Total="+ _Val.Item1 +
+                                        ", Regular=" + _Val.Item2 +
                                         ", OTRegular=" + _clsTotalEmpCalc.getRegularOT(clsChecking._SelEmpNO,clsPPeriod._SelID) + 
                                         ", OTRestday="+ _clsTotalEmpCalc.getRestDayOT(clsChecking._SelEmpNO,clsPPeriod._SelID) +
                                         ", OTLegalHoliday=" + _clsTotalEmpCalc.getHolidayOT(clsChecking._SelEmpNO, clsPPeriod._SelID) +
                                         ", OTSpecialHoliday=" + _clsTotalEmpCalc.getSpecialHolidayOT(clsChecking._SelEmpNO, clsPPeriod._SelID) +
-                                        ", Absences=" + _Val.Item2 +
-                                        ", Tardiness=" + _Val.Item3 +
+                                        ", Absences=" + _Val.Item3 +
+                                        ", Tardiness=" + _Val.Item4 +
                                         ", VL=" + _LeaveVal.Item1 +
                                         ", SL=" + _LeaveVal.Item2 +
-                                        ", LWOP=" + _Val.Item4 +
+                                        ", LWOP=" + _Val.Item5 +
                                         " WHERE Id=" + Convert.ToString((dtCalPeriod.SelectedCells[0].Column.GetCellContent(item) as TextBlock).Text));
                               cmbSite_DropDownClosed(null, null);
                 }

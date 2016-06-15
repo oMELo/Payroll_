@@ -72,16 +72,9 @@ namespace Payroll_
     }
     public class clsSchedule: INotifyPropertyChanged
     {
-        //public string _SchedCount;
+
         public string SchedCount {get;set;}
-        //{
-        //    get { return _SchedCount; }
-        //    set 
-        //    {
-        //        _SchedCount = value;
-        //        NotifyPropertyChanged("SchedCount");
-        //    }
-        //}
+        
         private string _image;
         #region INotifyPropertyChanged Members
 
@@ -190,6 +183,25 @@ namespace Payroll_
                 _Cmb.DisplayMemberPath = "_Value";
                 _Cmb.SelectedValuePath = "_ID";
                 
+            }
+        }
+        public void getQRYCMB(ComboBox _Cmb, String _Query)
+        {
+
+            _Cmb.ItemsSource = "";
+            List<fillCMB> ListData = new List<fillCMB>();
+            using (Database _DB = new Database())
+            {
+                _DB.Open(_Query);
+                while (_DB.Reader.Read())
+                {
+                    ListData.Add(new fillCMB { _ID = Convert.ToInt32(_DB.Reader["ID"].ToString()), _Value = Convert.ToString(_DB.Reader["Description"].ToString()) });
+                }
+
+                _Cmb.ItemsSource = ListData;
+                _Cmb.DisplayMemberPath = "_Value";
+                _Cmb.SelectedValuePath = "_ID";
+
             }
         }
     
@@ -361,6 +373,7 @@ namespace Payroll_
        public Int32 _PayrollID { get; set; }
        public Int32 _EmpID { get; set; }
        public string _Fname {get;set;}
+       public string _EStat {get;set;}
        public decimal _Mata { get; set; }
        public decimal _Regular { get; set; }
        public decimal _LegHoliday { get; set; }

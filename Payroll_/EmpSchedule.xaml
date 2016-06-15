@@ -1,5 +1,6 @@
 ﻿<UserControl 
     x:Class="Payroll_.EmpSchedule"
+        Name="_pahina"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,105 +9,124 @@
         xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d" >
-    
-    <Grid Background="White" >
-        
-        <metro:Tile x:Name="TName" Content="" Height="37" Margin="0" Width="Auto" FontSize="24" IsEnabled="False" VerticalAlignment="Top" Background="#CC3C3C3C" BorderThickness="1"/>
-        <Label Content="Name" HorizontalAlignment="Left" Margin="10,91,0,0" Width="42" RenderTransformOrigin="0.929,0.519" Height="26" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="14"/>
+    <UserControl.Resources>
+        <!--<ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro.Resources;component/Icons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>-->
+        <Style x:Key="HighlightRow" TargetType="{x:Type Rectangle}">
+         
+             
+                    <Setter Property="OpacityMask">
+                        <Setter.Value>
+                            <VisualBrush x:Name="myBrush" Stretch="Fill" Visual="{StaticResource appbar_3d_3ds}"/>
+                        </Setter.Value>
+                    </Setter>
+       
+        </Style>
+       
+    </UserControl.Resources>
+   
+    <Grid >
+
+        <metro:Tile  x:Name="TName" Content="" Height="37" Margin="0" Width="Auto" FontSize="24" IsEnabled="False" VerticalAlignment="Top" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderThickness="1"/>
+        <Label Content="Name" HorizontalAlignment="Left" Margin="10,91,0,0" RenderTransformOrigin="0.929,0.519" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="14"/>
         <TextBox  x:Name="txtSearch" Height="26" Margin="88,91,0,0" TextWrapping="Wrap"  
         	metro:TextBoxHelper.Watermark="Search ..."
         	metro:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonCmdWithParameter, Mode=OneWay}"
         	metro:TextBoxHelper.ButtonCommandParameter="{Binding Text, ElementName=test2}"
         	Style="{DynamicResource SearchMetroTextBox}" TextChanged="txtSearch_TextChanged" HorizontalAlignment="Left" Width="213" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="14" />
-        <ComboBox x:Name="cmbSite" HorizontalAlignment="Left" Height="25" Margin="88,60,0,0" VerticalAlignment="Top" Width="213" DropDownOpened="cmbSite_DropDownOpened" DropDownClosed="cmbSite_DropDownClosed" SelectionChanged="cmbSite_SelectionChanged" FontFamily="Segoe UI" FontSize="14"/>
+        <ComboBox Controls:TextBoxHelper.ClearTextButton="True" x:Name="cmbSite" HorizontalAlignment="Left" Height="25" Margin="88,60,0,0" VerticalAlignment="Top" Width="213" DropDownOpened="cmbSite_DropDownOpened" DropDownClosed="cmbSite_DropDownClosed" SelectionChanged="cmbSite_SelectionChanged" FontFamily="Segoe UI" FontSize="14"/>
         <Label Content="Site" HorizontalAlignment="Left" Margin="10,60,0,0" Width="32" RenderTransformOrigin="0.929,0.519" Height="26" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="14"/>
         <!--<Button x:Name="btViewSchedule" Content="View Schedule" HorizontalAlignment="Left" Height="30" Margin="13,0,0,26" Width="118" Click="btViewSchedule_Click" VerticalAlignment="Bottom"/>-->
         <Button x:Name="btCancel" Content="Cancel" Height="30" Margin="259,0,0,26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="118" Click="btCancel_Click" FontFamily="Segoe UI" FontSize="14"/>
         <Button x:Name="btAddSchedule" Content="Add Schedule" Height="30" Margin="136,0,0,26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="118" Click="btAddSchedule_Click" IsEnabled="False" FontFamily="Segoe UI" FontSize="14"/>
         <Button x:Name="btViewSched" Content="View Schedules" Height="30" Margin="13,0,0,26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="118" Click="btViewSched_Click" FontFamily="Segoe UI" FontSize="14"/>
-
-        <DataGrid x:Name="dt" ItemsSource="{Binding Source}">
-            <DataGrid.Resources>
-                <Style TargetType="{x:Type DataGridRow}">
-                    <Setter Property="Foreground" Value="Red"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ColorSwitch}" Value="false">
-                            <Setter Property="Foreground" Value="Green"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.Resources>
-        </DataGrid>
-        <!--<DataGrid  x:Name="dt" 
-        	ItemsSource="{Binding Source}"
-            CanUserAddRows="False"
-        	IsReadOnly="True"
-        	CanUserReorderColumns="False" 
-            CanUserSortColumns="False"
-        	Cursor="" 
-            Background="White" 
-        	GridLinesVisibility="Horizontal" 	
-        	BorderThickness="1,0,0,0"  
-            SelectionMode="Single" 
-            Margin="10,134,10,61" 
-            SelectionChanged="dt_SelectionChanged" 
-            FontFamily="Segoe UI" 
-            FontSize="14">
-            --><!--<DataGrid x:Name="dt" ItemsSource="{Binding Source}">--><!--
-                <DataGrid.Resources>
-                    <Style TargetType="{x:Type DataGridRow}">
-                        <Setter Property="Foreground" Value="Red"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ColorSwitch}" Value="false">
-                                <Setter Property="Foreground" Value="Green"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.Resources>
-            </DataGrid>-->
-            <!--</DataGrid>-->
-
-            <!--<DataGrid.Columns>
+       
+        
+        <DataGrid 
+             Style="{StaticResource AzureDataGrid}" 
+            IsReadOnly="True" 
+            x:Name="dt" 
+            ItemsSource="{Binding _EmpSchedList}" 
+            Margin="0,134,0,61" 
+            SelectionMode="Single"  
+            AutoGenerateColumns="False" 
+            FontFamily="Segoe UI" SelectionChanged="dt_SelectionChanged" GridLinesVisibility="Horizontal" IsSynchronizedWithCurrentItem="False" >
+           
+            <DataGrid.Columns>
+                
                 <DataGridCheckBoxColumn 
         				ElementStyle="{DynamicResource MetroDataGridCheckBox}"
-        				EditingElementStyle="{DynamicResource MetroDataGridCheckBox}"
-        				Header="IsSelected"
-                   
+        				EditingElementStyle="{DynamicResource MetroDataGridCheckBox}"                  
         				Binding="{Binding IsSelected, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"/>
+                
                 <DataGridTemplateColumn  Width="SizeToCells" IsReadOnly="True">
+                    
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            --><!--image--><!--
-                            <Image Height="20" Source="{Binding Image}" />
+                     
+                            <DataTemplate>
+                            <Rectangle Width="20" Height="20" Name="recLogin">
+                                <Rectangle.Fill>
+                                    <VisualBrush x:Name="_BRU" Visual="{StaticResource appbar_user}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+
+                                <!--<DataTrigger Binding="{Binding SchedCount}" Value="0">
+                                    
+                                    <Setter  Property="OpacityMask">
+                                        <Setter.Value>
+                                            <VisualBrush  Stretch="Fill" Visual="{StaticResource appbar_add}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                
+                                </DataTrigger>-->
+                   
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
+                 
+
                 </DataGridTemplateColumn>
+                
                 <DataGridTextColumn Header="EMP ID"
         				Binding="{Binding _empID}" Width="auto"/>
                 <DataGridTextColumn Header="Name" 
         				Binding="{Binding _Name}" Width="auto" />
-                <DataGridTextColumn Header="Schedule Count"
-                        Binding="{Binding SchedCount}" Width="auto" />
+                <!--<DataGridTextColumn Header="Schedule Count"
+                        Binding="{Binding SchedCount}" Width="auto" />-->
                 <DataGridTextColumn Header="Jobtitle" 
         				Binding="{Binding _JobTitle}" Width="auto" />
                 <DataGridTextColumn Header="Department" 
         				Binding="{Binding _Department}" Width="auto" />
-            </DataGrid.Columns>-->
+            </DataGrid.Columns>
+            <DataGrid.CellStyle >
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SchedCount}" Value="0" >
+                         
+                                    <Setter Property="Foreground" Value="Red"  />
 
+                        </DataTrigger>
+                        </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
+          
+        </DataGrid>
 
-        <!--</DataGrid>-->
+ 
         <DataGrid  x:Name="dtCurSched" 
         		SelectedItem="{Binding Attendance, Mode=TwoWay}"
         		AutoGenerateColumns="False" CanUserAddRows="False"
         		IsReadOnly="True"
-                      Visibility="Hidden"
+                Visibility="Hidden"
         		CanUserReorderColumns="False" CanUserSortColumns="False"
-        		AlternatingRowBackground="LightGray"     
+        		   
         		Style="{DynamicResource AzureDataGrid}" 
-        		Cursor="" Background="White" 
+        		Cursor=""
         		GridLinesVisibility="Horizontal" 
         		
-        		BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" SelectionChanged="dt_SelectionChanged" Margin="10,134,10,61">
+        		BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" SelectionChanged="dt_SelectionChanged" Margin="0,134,0,61">
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="EMP ID"
@@ -128,9 +148,9 @@
         <Controls:Flyout Header="Actions"
                         Name="FlyOut"
                         IsOpen="False"
-                    
+                   
                         Position="right"
-                        Theme="Adapt" 
+                        Theme="Accent" 
                         HorizontalAlignment="Right" 
                         Width="484" Background="#FF363636" BorderThickness="1" FontSize="10" Margin="0,-1,0,0" ClosingFinished="FlyOut_ClosingFinished" metro:ControlsHelper.ContentCharacterCasing="Upper" >
             <Grid Margin="10,0">
@@ -142,10 +162,10 @@
                 	ScrollViewer.HorizontalScrollBarVisibility="Visible"
                 	ScrollViewer.VerticalScrollBarVisibility="Visible"
                 	CanUserReorderColumns="False" CanUserSortColumns="False"
-                	AlternatingRowBackground="LightGray"     
+                	  
                 	Style="{DynamicResource AzureDataGrid}" 
                 	Margin="0,114,10,10" 
-                	Cursor="" Background="White" 
+                	Cursor="" 
                 	GridLinesVisibility="Horizontal" 
                 	BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" Visibility="Visible" SelectionChanged="dtSched_SelectionChanged" FontFamily="Segoe UI" FontSize="12" >
                     <DataGrid.Columns>
@@ -195,7 +215,7 @@
                 <TextBox x:Name="txtSearchSched" Height="0" Margin="0,39,143,0" TextWrapping="Wrap" VerticalAlignment="Top" metro:TextBoxHelper.Watermark="Search ..." HorizontalAlignment="Right" Width="191" TextChanged="txtSearchSched_TextChanged" IsEnabled="False"/>
                 <Label Content="Schedule Name" HorizontalAlignment="Left" Margin="10,39,0,0" VerticalAlignment="Top" Foreground="#FFFBFBFB" FontFamily="Segoe UI" FontSize="14"/>
                 <Label Content="Effectivity Date" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Foreground="#FFFBFBFB" FontFamily="Segoe UI" FontSize="14"/>
-                <ComboBox x:Name="cmbSchedType" HorizontalAlignment="Right" Height="22" Margin="0,8,143,0" VerticalAlignment="Top" Width="191" DropDownClosed="cmbSchedType_DropDownClosed" SelectionChanged="cmbSchedType_SelectionChanged_1"/>
+                <ComboBox Controls:TextBoxHelper.ClearTextButton="True" x:Name="cmbSchedType" HorizontalAlignment="Right" Height="22" Margin="0,8,143,0" VerticalAlignment="Top" Width="191" DropDownClosed="cmbSchedType_DropDownClosed" SelectionChanged="cmbSchedType_SelectionChanged_1"/>
                 <Label Content="Schedule Type" Margin="0,8,354,0" VerticalAlignment="Top" FontSize="14" HorizontalAlignment="Right" Foreground="White"/>
 
             </Grid>

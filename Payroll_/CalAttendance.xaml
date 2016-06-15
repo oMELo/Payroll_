@@ -29,10 +29,10 @@
     		AutoGenerateColumns="False" CanUserAddRows="False"
     	    VerticalGridLinesBrush="AliceBlue"
     		CanUserReorderColumns="False"
-    		AlternatingRowBackground="LightGray"     
+    		  
     		Style="{DynamicResource AzureDataGrid}" 
     		Margin="32,167,32,60" 
-    		Cursor="" Background="White" GridLinesVisibility="All" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" MouseDoubleClick="dtCalPeriod_MouseDoubleClick" RowEditEnding="dtCalPeriod_RowEditEnding" SelectionChanged="dtCalPeriod_SelectionChanged" Grid.ColumnSpan="2">
+    		Cursor="" Background="{x:Null}" GridLinesVisibility="All" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" MouseDoubleClick="dtCalPeriod_MouseDoubleClick" RowEditEnding="dtCalPeriod_RowEditEnding" SelectionChanged="dtCalPeriod_SelectionChanged" Grid.ColumnSpan="2">
             <DataGrid.Columns>
                 <DataGridTextColumn
                     IsReadOnly="True"
@@ -45,7 +45,9 @@
                 <DataGridTextColumn Header="Full Name"
                      IsReadOnly="True"                
     				Binding="{Binding _Fname}" Width="auto"/>
-
+                <DataGridTextColumn Header="Employee Status"
+                     IsReadOnly="True"                
+    				Binding="{Binding _EStat}" Width="auto"/>
                 <Controls:DataGridNumericUpDownColumn Header="MATA"    
                     
     				Binding="{Binding _Mata}" Width="auto" Minimum="0" Maximum="15"/>
@@ -93,7 +95,7 @@
         	Controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonCmdWithParameter, Mode=OneWay}"
         	Controls:TextBoxHelper.ButtonCommandParameter="{Binding Text, ElementName=test2}"
         	Style="{DynamicResource SearchMetroTextBox}" TextChanged="txtSearch_TextChanged" HorizontalAlignment="Left" Width="223" VerticalAlignment="Top" Grid.ColumnSpan="2" KeyDown="txtSearch_KeyDown" />
-        <ComboBox x:Name="cmbSite" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="25" Margin="110,79,0,0" VerticalAlignment="Top" Width="223" DropDownOpened="cmbSite_DropDownOpened" DropDownClosed="cmbSite_DropDownClosed" SelectionChanged="cmbSite_SelectionChanged"/>
+        <ComboBox Controls:TextBoxHelper.ClearTextButton="True" x:Name="cmbSite" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="25" Margin="110,79,0,0" VerticalAlignment="Top" Width="223" DropDownOpened="cmbSite_DropDownOpened" DropDownClosed="cmbSite_DropDownClosed" SelectionChanged="cmbSite_SelectionChanged"/>
         <!--<ComboBox x:Name="cmbDepartment" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="25" Margin="110,78,0,0" VerticalAlignment="Top" Width="223" DropDownOpened="cmbDepartment_DropDownOpened" DropDownClosed="cmbDepartment_DropDownClosed" SelectionChanged="cmbDepartment_SelectionChanged_1"  />-->
 
         <Controls:Tile x:Name="TName" Content="" Height="Auto" Margin="0" Width="Auto" FontSize="24" IsEnabled="False" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#CC000000"/>

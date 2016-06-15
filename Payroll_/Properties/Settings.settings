@@ -9,22 +9,22 @@
       <Value Profile="(Default)">TwAzW8XScshn00ffLiLsQ9JfzbLvQd2w</Value>
     </Setting>
     <Setting Name="Mandaluyong" Type="System.String" Scope="User">
-      <Value Profile="(Default)">IfHugVRq8Eb4guCho2OvQBT3MDwkfZRV8aygaM/AmGY=</Value>
+      <Value Profile="(Default)">121.58.217.123</Value>
     </Setting>
     <Setting Name="Makati" Type="System.String" Scope="User">
-      <Value Profile="(Default)">RpeFMfToTp6iw3cr1Q893Z++WxO+6b1e</Value>
+      <Value Profile="(Default)">10.10.9.158</Value>
     </Setting>
     <Setting Name="ODBC" Type="System.String" Scope="User">
       <Value Profile="(Default)">ADMX</Value>
-    </Setting>
-    <Setting Name="AMS" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ADMXSRV04</Value>
     </Setting>
     <Setting Name="AMS_Username" Type="System.String" Scope="User">
       <Value Profile="(Default)">sysdev</Value>
     </Setting>
     <Setting Name="AMS_Password" Type="System.String" Scope="User">
       <Value Profile="(Default)">Admx5299</Value>
+    </Setting>
+    <Setting Name="Cebu" Type="System.String" Scope="User">
+      <Value Profile="(Default)">112.198.55.209</Value>
     </Setting>
   </Settings>
 </SettingsFile>

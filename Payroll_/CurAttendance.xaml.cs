@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,10 @@ using MySql.Data.MySqlClient;
 using AdmereX;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
+using System.Threading;
 using System.Data.SqlClient;
+using System.Reflection;
 namespace Payroll_
 {
     /// <summary>
@@ -27,17 +31,21 @@ namespace Payroll_
     /// </summary>
     public partial class UserControl1 
     {
+      
+        string  SiteStat="";
         string tmpSql;
         string eID = "";
         string Site = "";
         Int32 AttID;
         clsEMPEARNING _getInOut = new clsEMPEARNING();
         Database _DB = new Database();
+       
         private static List<string> empName = new List<string>();
         public UserControl1()
         {
             InitializeComponent();
-            //clsAttendance.IsSelected = true;
+
+        
         }
         public void getEMP(string _Condition)
         {
@@ -61,15 +69,6 @@ namespace Payroll_
            "or (" + _Condition + " _DateOut IS NULL and  DATE_FORMAT(_DateIn,'%m/%d/%Y') >= '" + String.Format("{0:MM/dd/yyyy}", Convert.ToDateTime(clsStatic._GeneratedFromTime)) + "' and  DATE_FORMAT(_DateIn,'%m/%d/%Y') <= '" + String.Format("{0:MM/dd/yyyy}", Convert.ToDateTime(clsStatic._GeneratedToTime)) + "' )  " +
            "or (" + _Condition + " _DateIn IS NULL and DATE_FORMAT(_DateOut,'%m/%d/%Y')  >= '" + String.Format("{0:MM/dd/yyyy}", Convert.ToDateTime(clsStatic._GeneratedFromTime)) + "' and DATE_FORMAT(_DateOut,'%m/%d/%Y')  <= '" + String.Format("{0:MM/dd/yyyy}", Convert.ToDateTime(clsStatic._GeneratedToTime)) + "' ) " +
            "order by  CONCAT(fld_FirstName ,' ' ,fld_MiddleName,' ',  fld_LastName ),_DateIn ";
-
-            //Attendance("SELECT _ID,_EmpID, concat(ifnull(fld_FirstName,'') ,' ', ifnull(fld_MiddleName,'') , ' ' ,ifnull(fld_LastName,'')) as _Name,_DateIn,_DateOut  " +
-            //        "FROM admx_hrisp.tbl_EmpMasterFile  M " +
-            //        "inner join admx_hrisp.pp_EmpClocks E  on fld_IDNumber = _EmpID  where _EmpID IN ('20130038') " +
-            //        "and dATE_FORMAT(_DateIn,'%Y-%m-%d') >= '2016-05-06' AND dATE_FORMAT(_DateIn,'%Y-%m-%d') <= '2016-05-27' " +
-            //        "and dATE_FORMAT(_DateoUT,'%Y-%m-%d') >= '2016-05-06' AND dATE_FORMAT(_DateoUT,'%Y-%m-%d') <= '2016-05-27' " +
-            //        "OR (_EmpID IN ('20130038') AND dATE_FORMAT(_DateIn,'%Y-%m-%d') >= '2016-05-06' AND dATE_FORMAT(_DateIn,'%Y-%m-%d') <= '2016-05-27'  AND _DateoUT IS NULL) " +
-            //        "OR (_EmpID IN ('20130038') AND dATE_FORMAT(_DateoUT,'%Y-%m-%d') >= '2016-05-06' AND dATE_FORMAT(_DateoUT,'%Y-%m-%d') <= '2016-05-27' AND _DateIn IS NULL)");
-
             Attendance(tmpSql);
             dt.ItemsSource = "";
             dt.ItemsSource = clsAttendance._Attendance;
@@ -133,8 +132,12 @@ namespace Payroll_
             _frmDateTime.ShowDialog();
 
             if (clsStatic._Status.ToString() == "CANCEL") { btCANCEL_Click(null, null); return; }
-           //dt.SelectionUnit
-
+            _Sel._SelUnit.Clear();
+            _Sel._SelUnit.Add("FullRow");
+            _Sel._SelUnit.Add("Cell");
+            cmbSelection.ItemsSource = _Sel._SelUnit;
+            cmbSelection.SelectedIndex = 0;
+            cmbSelection.IsEnabled = true;
             getData("_EmpID in (" + toARR(eID) + ") and ");
             btGenerate.IsEnabled = false;
 
@@ -170,7 +173,7 @@ namespace Payroll_
                     {
 
                         object item = dt.SelectedItems[i];
-                        eID = eID + "'" + (dt.SelectedCells[2].Column.GetCellContent(item) as TextBlock).Text + "',";
+                        eID = eID + (dt.SelectedCells[2].Column.GetCellContent(item) as TextBlock).Text + ",";
                         empName.Add((dt.SelectedCells[3].Column.GetCellContent(item) as TextBlock).Text);
                         btGenerate.IsEnabled = true;
 
@@ -183,7 +186,7 @@ namespace Payroll_
                 MessageBox.Show(_eX.Message);
             }
         }
-        private  void btAdd_Click(object sender, RoutedEventArgs e)
+        private async  void btAdd_Click(object sender, RoutedEventArgs e)
         {
 
             object item = dt.SelectedItem;
@@ -205,11 +208,11 @@ namespace Payroll_
                 _DB.Execute("INSERT INTO admx_hrisp.pp_EmpClocks (_EmpID ,_DateIn,_DateOUT) values ('" + AttID + "' ,'" + String.Format("{0:yyyy-MM-dd hh:mm:ss}", Convert.ToDateTime(clsStatic._dtFromTime)) + "','" + String.Format("{0:yyyy-MM-dd hh:mm:ss}", Convert.ToDateTime(clsStatic._dtToTime)) + "')");
                 enable(false);
                 getData("_EmpID in (" + toARR(eID) + ") and ");
-
+                await (Window1.GetWindow(this) as Window1).ShowMessageAsync("Successfully", "Added");
               
             }
         }
-        private void btEdit_Click(object sender, RoutedEventArgs e)
+        private async void btEdit_Click(object sender, RoutedEventArgs e)
         {
 
             if (btEdit.Content.ToString() == "EDIT" && dt.SelectedItem != null)
@@ -229,7 +232,7 @@ namespace Payroll_
                 clsStatic._dtToTime = (dt.SelectedCells[5].Column.GetCellContent(item) as TextBlock).Text;
                 frmDateTime _frmDateTime = new frmDateTime();
                 _frmDateTime.ShowDialog();
-                if (clsStatic._Status == "CANCEL") { btEdit.Content = "EDIT" ; return; }
+                if (clsStatic._Status == "CANCEL") { btCANCEL_Click(null, null); return; }
                 
                 btEdit.Content = "UPDATE";
                 mnuEdit.Header = btEdit.Content;
@@ -243,7 +246,7 @@ namespace Payroll_
                 _DB.Execute("UPDATE admx_hrisp.pp_EmpClocks set _DateIn ='" + String.Format("{0:yyyy-MM-dd HH:mm:ss}", Convert.ToDateTime(clsStatic._dtFromTime)) + "', _DateOut='" + String.Format("{0:yyyy-MM-dd HH:mm:ss}", Convert.ToDateTime(clsStatic._dtToTime)) + "' where _ID=" + AttID);
                 enable(false);
                 getData("_EmpID in (" + toARR(eID) + ") and ");
-             
+                await (Window1.GetWindow(this) as Window1).ShowMessageAsync("Successfully", "Edited");
 
             }
 
@@ -253,10 +256,24 @@ namespace Payroll_
             btAdd.IsEnabled = _Ans;
             btEdit.IsEnabled = _Ans;
             btDelete.IsEnabled = _Ans;
+            cmbSelection.IsEnabled = _Ans;
 
         }
         private void dt_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            //string selectedData = "";
+            //if (cmbSelection.Text =="Cell")
+            //{
+            //    foreach (var dataGridCellInfo in dt.SelectedCells)
+            //    {
+
+            //        object x = dataGridCellInfo;
+            //        PropertyInfo pi = dataGridCellInfo.Item.GetType().GetProperty(dataGridCellInfo.Column.Header.ToString());
+            //        var value = pi.GetValue(dataGridCellInfo.Item, null);
+            //        selectedData += dataGridCellInfo.Column.Header + ": " + value.ToString() + "\n";
+            //    }
+            //    MessageBox.Show(selectedData);
+            //}
 
             if (clsAttendance._Attendance.Count != 0)
             {
@@ -268,7 +285,7 @@ namespace Payroll_
                 mnuAddNew.IsEnabled = true;
                 mnuEdit.IsEnabled = true;
                 AttID = Payroll_.clsAttendance._Attendance[dt.SelectedIndex]._ID;
-
+                lblName.Content = Payroll_.clsAttendance._Attendance[dt.SelectedIndex]._Name;               
                 clsStatic._dtFromTime = Payroll_.clsAttendance._Attendance[dt.SelectedIndex]._DateiN;
                 clsStatic._dtToTime = Payroll_.clsAttendance._Attendance[dt.SelectedIndex]._DateOut;
              
@@ -295,17 +312,23 @@ namespace Payroll_
             txtSearch.Text = "";
 
         }
-        private void btDelete_Click(object sender, RoutedEventArgs e)
+        private async void btDelete_Click(object sender, RoutedEventArgs e)
         {
             object item = dt.SelectedItem;
-
-
-            MessageBoxResult ans = MessageBox.Show("Are you sure?", "DELETE", MessageBoxButton.YesNo);
-            if (ans == MessageBoxResult.Yes)
+            var mySettings = new MetroDialogSettings()
+            {
+                AffirmativeButtonText = "Yes",
+                NegativeButtonText = "No",
+             };
+            MessageDialogResult result = await(Application.Current.MainWindow as Window1).ShowMessageAsync("Delete" , 
+                                        Environment.NewLine + "Are you sure?",
+            MessageDialogStyle.AffirmativeAndNegative, mySettings);
+            if (result == MessageDialogResult.Affirmative)
             {
 
                 _DB.Execute("delete from admx_hrisp.pp_EmpClocks where _ID=" + Convert.ToInt32((dt.SelectedCells[1].Column.GetCellContent(item) as TextBlock).Text));
-                MessageBox.Show("Successfully Deleted");
+                await (Window1.GetWindow(this) as Window1).ShowMessageAsync("Successfully", "Deleted");
+
                 getData("_EmpID in (" + toARR(eID) + ") and ");
                 enable(false);
                
@@ -324,7 +347,8 @@ namespace Payroll_
 
         }
         private void txtSearch_TextChanged(object sender, TextChangedEventArgs e)
-        {  
+        {
+            FlyOut.IsOpen = false;
             string temp="";
             if (cmbSite.Text == "") Site = " where ";
             else temp = " and ";
@@ -340,7 +364,7 @@ namespace Payroll_
 
 
         }
-        private  void btExport_Click(object sender, RoutedEventArgs e)
+        private async void btExport_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
             dlg.DefaultExt = ".xls";
@@ -404,7 +428,8 @@ namespace Payroll_
                 Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
                 
                 oWB.Close();
-                //await _Async();
+                await(Window1.GetWindow(this) as Window1).ShowMessageAsync("Successfully", "Exported");
+
             }
         }
         private void cmbSite_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -417,6 +442,7 @@ namespace Payroll_
            
             if (cmbSite.SelectedIndex >= 0)
             {
+                FlyOut.IsOpen = false;
                 txtSearch.Text = "";
                 Site = " where fld_site=" + Convert.ToInt32(cmbSite.SelectedValue);
                 getEMP(Site);
@@ -432,51 +458,10 @@ namespace Payroll_
         {
             if (dt.SelectedIndex >= 0)
             {
-                //int item = dt.SelectedIndex;
-                //Payroll_.clsAttendance._SEARCHLIST[dt.SelectedIndex]._empID
-                SqlDataReader sqlReader;
-                SqlCommand _SqlCommand;
-                SQLData._SQLDATA.Clear();
-                dt_AMS.ItemsSource = "";
-                using (SqlConnection _SqlConn = new SqlConnection("server=" + Properties.Settings.Default.AMS + ";database=ATT_db;user id=sysdev;password=Admx5299"))
-                {
-                    _SqlConn.Open();
-
-                     _SqlCommand = new SqlCommand("select  " +
-                                                            "distinct " +
-                                                            "convert(varchar(10),Checktime,101) as 'Date', " +
-                                                            "(convert(varchar(10),Checktime,101)  + ' ' + convert(varchar(10),CHECKTIME,108))  as 'CheckDate', " +
-                                                            "case " +
-                                                            "When CHECKTYPE = Upper('I') COLLATE Latin1_General_CS_AI  then 'C / In' " +
-                                                            "When CHECKTYPE = Upper('O') COLLATE Latin1_General_CS_AI then 'C / Out' " +
-                                                            "When CHECKTYPE = '1' then 'Break In' " +
-                                                            "When CHECKTYPE = '0' then 'Break Out' " +
-                                                            "When CHECKTYPE = lower('i') COLLATE Latin1_General_CS_AI then 'O.T. / In' " +
-                                                            "When CHECKTYPE = lower('o') COLLATE Latin1_General_CS_AI then 'O.T / Out' " +
-                                                            "Else '	-	' " +
-                                                            "END as 'State' " +
-                                                            "from [ATT_db].[dbo].[USERINFO] U " +
-                                                            "inner join [ATT_db].[dbo].[CHECKINOUT] C " +
-                                                                "on U.[USERID] = C.[USERID]  " +
-                                                            "where Checktime between '" + clsStatic._GeneratedFromTime + "' and '" + clsStatic._GeneratedToTime + "' " +
-                                                            "and badgenumber = '" + Payroll_.clsAttendance._Attendance[dt.SelectedIndex]._empID + "' " +
-                                                            "order by convert(varchar(10),Checktime,101)", _SqlConn);
-                    sqlReader = _SqlCommand.ExecuteReader();
-                    while (sqlReader.Read())
-                    {
-                        SQLData._SQLDATA.Add(new SQLData()
-
-                        {
-
-                            _CheckDate = sqlReader["Date"].ToString(),
-                            _CheckTime = String.Format("{0:MM/dd/yyyy hh:mm:ss}", Convert.ToDateTime(sqlReader["CheckDate"].ToString())),
-                            _State = sqlReader["State"].ToString()
-
-                        });
-                    }
-                    dt_AMS.ItemsSource = SQLData._SQLDATA;
+          
+                
                     FlyOut.IsOpen = true;
-                }
+                
             }
         }
 
@@ -504,11 +489,20 @@ namespace Payroll_
          
         }
 
-        private void FlyOut_ClosingFinished(object sender, RoutedEventArgs e)
+        private async void FlyOut_ClosingFinished(object sender, RoutedEventArgs e)
         {
             object item = dt.SelectedItem;
-              MessageBoxResult ans = MessageBox.Show("Do you want to Save this?", "SAVE", MessageBoxButton.YesNo);
-              if (ans == MessageBoxResult.Yes)
+            var mySettings = new MetroDialogSettings()
+            {
+                AffirmativeButtonText = "Yes",
+                NegativeButtonText = "No",
+
+            };
+            MessageDialogResult result = await (Application.Current.MainWindow as Window1).ShowMessageAsync("SAVE",
+                                        Environment.NewLine + "Do you want to Save this?",
+            MessageDialogStyle.AffirmativeAndNegative, mySettings);
+
+              if (result == MessageDialogResult.Affirmative)
               {
                   
                   clsStatic._dtFromTime = (dt.SelectedCells[4].Column.GetCellContent(item) as TextBlock).Text;
@@ -516,7 +510,7 @@ namespace Payroll_
                   btEdit.Content = "UPDATE";
                   btEdit_Click(null, null);
               }
-              else 
+              else if (result == MessageDialogResult.Negative)
               {
                   (dt.SelectedCells[4].Column.GetCellContent(item) as TextBlock).Text = clsStatic._dtFromTime;
                   (dt.SelectedCells[5].Column.GetCellContent(item) as TextBlock).Text = clsStatic._dtToTime;
@@ -546,6 +540,132 @@ namespace Payroll_
         {
             dt.UnselectAll(); 
         }
-       
+
+        
+
+        private void cmbAMSSite_DropDownOpened(object sender, EventArgs e)
+        {
+            fillCMB _CMBData = new fillCMB();
+            _CMBData.getQRYCMB(cmbAMSSite, "select fld_StaticParamID as ID , fld_StaticParamDesc as Description from admx_hrisp.tbl_staticparam where fld_CategoryID = 9 and fld_StaticParamID <> 136");
+        }
+
+        private void cmbAMSSite_DropDownClosed(object sender, EventArgs e)
+        {
+            if (cmbAMSSite.SelectedIndex >= 0)
+            {
+                switch (cmbAMSSite.Text)
+                {
+                    case "MAKATI SITE":
+                        SiteStat = Properties.Settings.Default.Makati;
+                        break;
+                    case "MANDALUYONG SITE":
+                        SiteStat = Properties.Settings.Default.Mandaluyong;
+                        break;
+                    case "CEBU SITE":
+                        SiteStat = Properties.Settings.Default.Cebu;
+                        break;
+
+                }
+
+
+                SqlDataReader sqlReader;
+                SqlCommand _SqlCommand;
+                SQLData._SQLDATA.Clear();
+                dt_AMS.ItemsSource = "";
+                using (SqlConnection _SqlConn = new SqlConnection("server=" + SiteStat + ";database=ATT_db;user id=sysdev;password=Admx5299"))
+                {
+                    _SqlConn.Open();
+
+                    _SqlCommand = new SqlCommand("select  " +
+                                                           "distinct " +
+                                                           "convert(varchar(10),Checktime,101) as 'Date', " +
+                                                           "(convert(varchar(10),Checktime,101)  + ' ' + convert(varchar(10),CHECKTIME,108))  as 'CheckDate', " +
+                                                           "case " +
+                                                           "When CHECKTYPE = Upper('I') COLLATE Latin1_General_CS_AI  then 'C / In' " +
+                                                           "When CHECKTYPE = Upper('O') COLLATE Latin1_General_CS_AI then 'C / Out' " +
+                                                           "When CHECKTYPE = '1' then 'Break In' " +
+                                                           "When CHECKTYPE = '0' then 'Break Out' " +
+                                                           "When CHECKTYPE = lower('i') COLLATE Latin1_General_CS_AI then 'O.T. / In' " +
+                                                           "When CHECKTYPE = lower('o') COLLATE Latin1_General_CS_AI then 'O.T / Out' " +
+                                                           "Else '	-	' " +
+                                                           "END as 'State' " +
+                                                           "from [ATT_db].[dbo].[USERINFO] U " +
+                                                           "inner join [ATT_db].[dbo].[CHECKINOUT] C " +
+                                                               "on U.[USERID] = C.[USERID]  " +
+                                                           "where Checktime between '" + clsStatic._GeneratedFromTime + "' and '" + clsStatic._GeneratedToTime + "' " +
+                                                           "and badgenumber = '" + Payroll_.clsAttendance._Attendance[dt.SelectedIndex]._empID + "' " +
+                                                           "order by convert(varchar(10),Checktime,101)", _SqlConn);
+                    sqlReader = _SqlCommand.ExecuteReader();
+                    while (sqlReader.Read())
+                    {
+                        SQLData._SQLDATA.Add(new SQLData()
+
+                        {
+
+                            _CheckDate = sqlReader["Date"].ToString(),
+                            _CheckTime = String.Format("{0:MM/dd/yyyy hh:mm:ss}", Convert.ToDateTime(sqlReader["CheckDate"].ToString())),
+                            _State = sqlReader["State"].ToString()
+
+                        });
+                    }
+                    dt_AMS.ItemsSource = SQLData._SQLDATA;
+                }
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            dt.SelectionUnit = DataGridSelectionUnit.Cell;
+            string selectedData = "";
+            foreach (var dataGridCellInfo in dt.SelectedCells)
+            {
+                PropertyInfo pi = dataGridCellInfo.Item.GetType().GetProperty(dataGridCellInfo.Column.Header.ToString());
+                var value = pi.GetValue(dataGridCellInfo.Item, null);
+                selectedData += dataGridCellInfo.Column.Header + ": " + value.ToString() + "\n";
+            }
+            MessageBox.Show(selectedData);
+        }
+
+      
+
+        private void cmbSelection_DropDownClosed(object sender, EventArgs e)
+        {
+        
+            //switch (cmbSelection.Text)
+            //{
+            //    case "FullRow":
+            //         dt.SelectionUnit = DataGridSelectionUnit.FullRow;
+                      
+            //        break;
+            //    case "Cell":
+            //         dt.SelectionUnit = DataGridSelectionUnit.Cell;
+                     
+            //        break;
+
+            //}
+        }
+
+        private void cmbSelection_DropDownOpened(object sender, EventArgs e)
+        {
+            
+            
+        }
+     
+        public class  _Sel
+        {
+            public static List<String> _SelUnit = new List<String>();
+           
+            public  string _Type { get; set; }
+
+          
+
+          
+        }
+
+        private void cmbSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
     }
 }

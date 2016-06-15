@@ -6,9 +6,10 @@
              xmlns:local="clr-namespace:Payroll_"
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+     
              x:Class="Payroll_.UserControl1"
              mc:Ignorable="d" >
-    <Grid Background="White">
+    <Grid   >
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
@@ -16,17 +17,17 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <CheckBox x:Name="ckSelectALL" Content="Select ALL" Height="26" Margin="0,0,211,1" VerticalAlignment="Bottom" Checked="ckSelectALL_Checked" HorizontalAlignment="Right" Width="82" Unchecked="ckSelectALL_Unchecked"/>
+        <CheckBox x:Name="ckSelectALL" Content="Select ALL" Height="26" Margin="10,0,0,2" VerticalAlignment="Bottom" Checked="ckSelectALL_Checked" Unchecked="ckSelectALL_Unchecked" HorizontalAlignment="Left" Width="82"/>
 
         <DataGrid  x:Name="dt" 
 			SelectedItem="{Binding Attendance, Mode=TwoWay}"
 			AutoGenerateColumns="False" CanUserAddRows="False"
 			IsReadOnly="True"
             CanUserReorderColumns="False"
-			AlternatingRowBackground="LightGray"     
+			   
 			Style="{DynamicResource AzureDataGrid}" 
-			Margin="10,129,211,33" 
-			Cursor="" Background="White" 
+			Margin="10,129,210,33" 
+			Cursor="" 
 			MouseRightButtonDown="dt_MouseRightButtonDown" 
 			SelectionChanged="dt_SelectionChanged" 
 			MouseDoubleClick="dt_MouseDoubleClick" GridLinesVisibility="Horizontal" 
@@ -35,7 +36,6 @@
                 <DataGridCheckBoxColumn 
 					ElementStyle="{DynamicResource MetroDataGridCheckBox}"
 					EditingElementStyle="{DynamicResource MetroDataGridCheckBox}"
-					Header="IsSelected"
 					Binding="{Binding IsSelected,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"/>
                 <DataGridTextColumn 
                   
@@ -61,60 +61,68 @@
             </DataGrid.ContextMenu>
         </DataGrid>
 
-
-        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btGenerate" Content="GENERATE" Height="28" Margin="0,154,20,0" VerticalAlignment="Top" Click="btGenerate_Click" HorizontalAlignment="Right" Width="173" IsEnabled="False" />
-        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btAdd" Content="ADD NEW" Height="27" Margin="0,219,20,0" VerticalAlignment="Top" Click="btAdd_Click" IsEnabled="False" HorizontalAlignment="Right" Width="173"/>
-        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btEdit" Content="EDIT" Height="28" Margin="0,250,20,0" VerticalAlignment="Top" Click="btEdit_Click" IsEnabled="False" HorizontalAlignment="Right" Width="173"/>
-        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btDelete" Content="DELETE" Height="27" Margin="0,283,20,0" VerticalAlignment="Top" RenderTransformOrigin="0.546,-1.801" Click="btDelete_Click" IsEnabled="False" HorizontalAlignment="Right" Width="173"/>
-        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btCANCEL" Content="CANCEL" Height="27" Margin="0,315,20,0" VerticalAlignment="Top" Click="btCANCEL_Click" HorizontalAlignment="Right" Width="173"/>
-        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btExport" Content="Export to Excel" Margin="0,348,20,-1" HorizontalAlignment="Right" Width="173" Height="28" VerticalAlignment="Top" Click="btExport_Click"/>
-        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btViewLogs" Content="View Logs" Height="27" Margin="0,187,20,0" VerticalAlignment="Top" Click="btViewLogs_Click" HorizontalAlignment="Right" Width="173" IsEnabled="False"/>
-
+        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btGenerate" Content="GENERATE" Height="28" Margin="0,203,20,0" VerticalAlignment="Top" Click="btGenerate_Click" HorizontalAlignment="Right" Width="173" IsEnabled="False" />
+        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btAdd" Content="ADD NEW" Height="27" Margin="0,268,20,0" VerticalAlignment="Top" Click="btAdd_Click" IsEnabled="False" HorizontalAlignment="Right" Width="173"/>
+        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btEdit" Content="EDIT" Height="28" Margin="0,299,20,0" VerticalAlignment="Top" Click="btEdit_Click" IsEnabled="False" HorizontalAlignment="Right" Width="173"/>
+        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btDelete" Content="DELETE" Height="27" Margin="0,332,20,0" VerticalAlignment="Top" RenderTransformOrigin="0.546,-1.801" Click="btDelete_Click" IsEnabled="False" HorizontalAlignment="Right" Width="173"/>
+        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btCANCEL" Content="CANCEL" Height="27" Margin="0,364,20,0" VerticalAlignment="Top" Click="btCANCEL_Click" HorizontalAlignment="Right" Width="173"/>
+        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btExport" Content="Export to Excel" Margin="0,397,20,0" HorizontalAlignment="Right" Width="173" Height="28" VerticalAlignment="Top" Click="btExport_Click"/>
+        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="btViewLogs" Content="View Logs" Height="27" Margin="0,236,20,0" VerticalAlignment="Top" Click="btViewLogs_Click" HorizontalAlignment="Right" Width="173" IsEnabled="False"/>
         <Label Content="Name" HorizontalAlignment="Left" Margin="10,72,0,0" Width="42" RenderTransformOrigin="0.929,0.519" Height="26" VerticalAlignment="Top"/>
-        <TextBox  x:Name="txtSearch" Height="26" Margin="88,72,0,0" TextWrapping="Wrap"  
+        <ComboBox x:Name="cmbSelection"  Height="25" Margin="0,160,20,0"  metro:TextBoxHelper.Watermark="- Data Selection -" HorizontalAlignment="Right" Width="173" DropDownClosed="cmbSelection_DropDownClosed" DropDownOpened="cmbSelection_DropDownOpened" VerticalAlignment="Top" IsEnabled="False" SelectionChanged="cmbSelection_SelectionChanged"/>
+        <Label Content="Selection Mode" Margin="0,129,100,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="93"/>
+
+
+        <TextBox  x:Name="txtSearch"  Height="26" Margin="88,72,0,0" TextWrapping="Wrap"  
 			Controls:TextBoxHelper.Watermark="Search ..."
 			Controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonCmdWithParameter, Mode=OneWay}"
 			Controls:TextBoxHelper.ButtonCommandParameter="{Binding Text, ElementName=test2}"
 			Style="{DynamicResource SearchMetroTextBox}" TextChanged="txtSearch_TextChanged" HorizontalAlignment="Left" Width="223" VerticalAlignment="Top" />
-        <ComboBox x:Name="cmbSite" HorizontalAlignment="Left" Height="25" Margin="88,41,0,0" VerticalAlignment="Top" Width="223" DropDownOpened="cmbSite_DropDownOpened" DropDownClosed="cmbSite_DropDownClosed" SelectionChanged="cmbSite_SelectionChanged"/>
+        <ComboBox x:Name="cmbSite" HorizontalAlignment="Left" Controls:TextBoxHelper.ClearTextButton="True" Height="25" Margin="88,41,0,0" VerticalAlignment="Top" Width="223" DropDownOpened="cmbSite_DropDownOpened" DropDownClosed="cmbSite_DropDownClosed" SelectionChanged="cmbSite_SelectionChanged" metro:TextBoxHelper.Watermark="Site ..."/>
         <Label Content="Site" HorizontalAlignment="Left" Margin="10,41,0,0" Width="32" RenderTransformOrigin="0.929,0.519" Height="26" VerticalAlignment="Top"/>
-    
+
         <Controls:Flyout Header="Actions"
                         Name="FlyOut"
                         IsOpen="False"
                        
                         Position="right"
-                        Theme="Adapt" 
+                        Theme="Accent" 
                         HorizontalAlignment="Right" 
                         Width="368" Background="#FF363636" BorderThickness="1" FontSize="10" Margin="0,0,0,-1" ClosingFinished="FlyOut_ClosingFinished">
-            <DataGrid  x:Name="dt_AMS" 
-        		SelectedItem="{Binding Attendance, Mode=TwoWay}"
-        		AutoGenerateColumns="False" CanUserAddRows="False"
-        		IsReadOnly="True"
-        		CanUserReorderColumns="False"
-        		AlternatingRowBackground="LightGray"     
-        		Style="{DynamicResource AzureDataGrid}" 
-        		Margin="10,0" 
-        		Cursor="" Background="White" 
-                GridLinesVisibility="Horizontal" 
-                BorderThickness="1,0,0,0" 
-                BorderBrush="#CC7F7F81" 
-                FontSize="14" SelectionChanged="dt_AMS_SelectionChanged" SelectionMode="Single"  >
-                <DataGrid.Columns>
+            <Grid Margin="10,0">
+                <DataGrid  x:Name="dt_AMS" 
+            		SelectedItem="{Binding Attendance, Mode=TwoWay}"
+            		AutoGenerateColumns="False" CanUserAddRows="False"
+            		IsReadOnly="True"
+            		CanUserReorderColumns="False"
+            		AlternatingRowBackground="LightGray"     
+            		Style="{DynamicResource AzureDataGrid}" 
+            		Cursor="" Background="White" 
+            		GridLinesVisibility="Horizontal" 
+            		BorderThickness="1,0,0,0" 
+            		BorderBrush="#CC7F7F81" 
+            		FontSize="14" SelectionChanged="dt_AMS_SelectionChanged" SelectionMode="Single" Margin="0,92,0,21"  >
+                    <DataGrid.Columns>
 
-                    <DataGridTextColumn Header="Check Date"
-        				Binding="{Binding _CheckDate}" Width="auto"/>
-                    <DataGridTextColumn Header="Check Time" 
-        				Binding="{Binding _CheckTime}" Width="auto" />
-                    <DataGridTextColumn Header="State"
-        				Binding="{Binding _State}" Width="auto"/>
+                        <DataGridTextColumn Header="Check Date"
+            				Binding="{Binding _CheckDate}" Width="auto"/>
+                        <DataGridTextColumn Header="Check Time" 
+            				Binding="{Binding _CheckTime}" Width="auto" />
+                        <DataGridTextColumn Header="State"
+            				Binding="{Binding _State}" Width="auto"/>
 
-                </DataGrid.Columns>
+                    </DataGrid.Columns>
 
-            </DataGrid>
+                </DataGrid>
+                <ComboBox x:Name="cmbAMSSite" Controls:TextBoxHelper.ClearTextButton="True"  HorizontalAlignment="Left" Height="25" Margin="62,57,0,0" VerticalAlignment="Top" Width="223" DropDownOpened="cmbAMSSite_DropDownOpened" DropDownClosed="cmbAMSSite_DropDownClosed" metro:TextBoxHelper.Watermark="Select Site"/>
+                <Label Content="Site" HorizontalAlignment="Left" Margin="10,58,0,0" RenderTransformOrigin="0.929,0.519" VerticalAlignment="Top" Foreground="White" FontSize="14"/>
+                <Label x:Name="lblName" Content="" HorizontalAlignment="Left" Margin="33,10,0,0" RenderTransformOrigin="0.929,0.519" VerticalAlignment="Top" Foreground="White" FontSize="16"/>
+
+            </Grid>
             <!--<ListBox x:Name="_ListEMPACTIVE" Height="222" Margin="11,0,10,0"/>-->
+
         </Controls:Flyout>
-       
+
 
     </Grid>
 </UserControl>

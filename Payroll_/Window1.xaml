@@ -1,0 +1,158 @@
+﻿<Controls:MetroWindow x:Class="Payroll_.Window1"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      Name="_Window1"
+                      Title="MainWindow"
+                      Height="613.937"
+                      Width="594.221"
+
+                      BorderThickness="0" 
+                      GlowBrush="Black"
+                      ResizeMode="CanResizeWithGrip"
+
+                      WindowTransitionsEnabled="False"
+                      WindowStartupLocation="CenterScreen" WindowState="Maximized">
+
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+
+            <Button Click="LaunchSettings">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20"
+                   Height="20"
+                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush  Stretch="Fill" Visual="{StaticResource appbar_settings}"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0"
+                   VerticalAlignment="Center"
+                   Text="Settings"/>
+                </StackPanel>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+    <Window.Resources>
+        <Style x:Key="LargeTileStyle" TargetType="mah:Tile">
+            <Setter Property="Width" Value="300" />
+            <Setter Property="Height" Value="125" />
+            <Setter Property="TitleFontSize" Value="10" />
+        </Style>
+
+        <Style x:Key="SmallTileStyle" TargetType="mah:Tile">
+            <Setter Property="Width" Value="147" />
+            <Setter Property="Height" Value="125" />
+            <Setter Property="TitleFontSize" Value="10" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="0,0,-2,2">
+
+        <WrapPanel x:Name="mah" Margin="10,9,0,0" HorizontalAlignment="Left" Width="310" Height="527" VerticalAlignment="Top">
+            <mah:Tile x:Name="TileEmpSched" Title="Employee Schedule"  Style="{StaticResource LargeTileStyle}"   Background="DarkMagenta" Click="TileEmpSched_Click" >
+                <Grid Width="40"
+                          Background="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Controls:Tile}}}">
+                    <Grid.OpacityMask>
+                        <VisualBrush Stretch="Fill"
+                                         Visual="{DynamicResource appbar_calendar_range}" />
+                    </Grid.OpacityMask>
+                </Grid>
+            </mah:Tile>
+            <mah:Tile x:Name="TileEmpAtt" Title="Attendance Management" Style="{StaticResource LargeTileStyle}"  Background="Blue" Click="TileEmpAtt_Click" >
+                <Grid Width="40"
+                          Background="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Controls:Tile}}}">
+                    <Grid.OpacityMask>
+                        <VisualBrush Stretch="Fill"
+                                         Visual="{DynamicResource appbar_calendar_day}" />
+                    </Grid.OpacityMask>
+                </Grid>
+            </mah:Tile>
+            <mah:Tile x:Name="TileDownload" Title="Download" Style="{StaticResource LargeTileStyle}"  Background="DarkGoldenrod" Click="TileDownload_Click"  >
+                <Grid Width="40"
+                          Background="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Controls:Tile}}}">
+                    <Grid.OpacityMask>
+                        <VisualBrush Stretch="Fill"
+                                         Visual="{DynamicResource appbar_download}" />
+                    </Grid.OpacityMask>
+                </Grid>
+            </mah:Tile>
+            <mah:Tile x:Name="TilePayroll" Title="Payroll" Style="{StaticResource LargeTileStyle}"  Background="Green" Click="TilePayroll_Click"  >
+                <Grid Width="40"
+                          Background="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Controls:Tile}}}">
+                    <Grid.OpacityMask>
+                        <VisualBrush Stretch="Fill" 
+                                         Visual="{DynamicResource appbar_money}" />
+                    </Grid.OpacityMask>
+                </Grid>
+            </mah:Tile>
+        </WrapPanel>
+        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"  Margin="325,0,0,0"/>
+        <Controls:Flyout 
+                        IsModal="True"
+                        Header="Actions"
+                        Name="FlyOut"
+                        IsOpen="False"
+                        Position="right"
+                        Theme="Accent" 
+                        HorizontalAlignment="Right" 
+                       
+                        Width="368" Background="#FF363636" 
+                        BorderThickness="1" FontSize="10" 
+                        Margin="0,0,0,-1" >
+            <Grid >
+                <TextBox x:Name="txtServerName" BorderBrush="Gray"  Height="30" Margin="0,22,55,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="183" mah:TextBoxHelper.Watermark="HRISP Server Address"/>
+                <TextBox x:Name="txtDatabase" Height="30" Margin="0,57,55,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="183" mah:TextBoxHelper.Watermark="HRISP Database"/>
+                <TextBox x:Name="txtHRISPUsername" Height="30" Margin="0,92,55,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="183" mah:TextBoxHelper.Watermark="HRISP Username"/>
+                <PasswordBox x:Name="txtHRISPPassword" Height="26" Margin="0,127,55,0" VerticalAlignment="Top" Password="*******" HorizontalAlignment="Right" Width="183"/>
+
+                <TextBox x:Name="txtAMSMakati" Height="30" Margin="0,184,55,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="183" mah:TextBoxHelper.Watermark="Makati"/>
+                <TextBox x:Name="txtAMSMandaluyong" Height="30" Margin="0,219,55,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="183" mah:TextBoxHelper.Watermark="Mandaluyong"/>
+                <TextBox x:Name="txtAMSCebu" Height="30" Margin="0,257,55,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="183" mah:TextBoxHelper.Watermark="Cebu"/>
+                <TextBox x:Name="txtAMSUsername" Height="30" Margin="0,294,55,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="183" mah:TextBoxHelper.Watermark="AMS Username"/>
+                <PasswordBox x:Name="txtAMSPassword" Height="26" Margin="0,330,55,0" VerticalAlignment="Top" Password="*******" HorizontalAlignment="Right" Width="183"/>
+
+                <!--<Button x:Name="bSave" Content="SAVE" Height="41" Margin="0,329,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="165" Click="bSave_Click"/>-->
+                <TextBox ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" x:Name="errTxtBox" Margin="25,378,30,75" TextWrapping="Wrap" mah:TextBoxHelper.Watermark="Connecting ..."/>
+                <Button x:Name="btConnection" Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Width="68" Height="57" VerticalAlignment="Bottom" Margin="0,0,96,13" Click="btConnection_Click" Background="White">
+                    <Button.Content>
+                        <Rectangle Fill="Black" Width="20" Height="20" >
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Visual="{StaticResource appbar_connect}" Stretch="Fill"></VisualBrush>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button.Content>
+                </Button>
+                <Button x:Name="btSvae" Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Width="68" Height="57" VerticalAlignment="Bottom" Margin="0,0,23,13" Click="bSave_Click" Background="White">
+                    <Button.Content>
+                        <Rectangle Fill="Black" Width="20" Height="20" >
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Visual="{StaticResource appbar_save}" Stretch="Fill"></VisualBrush>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button.Content>
+                </Button>
+                <Label Foreground="{StaticResource WhiteBrush}"  Content="HRISP SERVER" HorizontalAlignment="Right" Margin="0,22,275,0" VerticalAlignment="Top" FontSize="11">
+                    <!--<Style TargetType="{x:Type la}">
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontFamily" Value="{StaticResource ContentFontFamily}"/>
+                        <Setter Property="FontSize" Value="{StaticResource ContentFontSize}"/>
+                        <Setter Property="SnapsToDevicePixels" Value="2"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="{DynamicResource BlackBrush}"/>
+                    </Style>-->
+                </Label>
+                <Label Foreground="{StaticResource WhiteBrush}" Content="USERNAME" HorizontalAlignment="Right" Margin="0,92,275,0" VerticalAlignment="Top" FontSize="11"/>
+                <Label Foreground="{StaticResource WhiteBrush}" Content="PASSWORD" HorizontalAlignment="Right" Margin="0,127,275,0" VerticalAlignment="Top" FontSize="11"/>
+                <Label Foreground="{StaticResource WhiteBrush}" Content="AMS SERVER" HorizontalAlignment="Right" Margin="0,184,275,0" VerticalAlignment="Top" FontSize="11"/>
+                <Label Foreground="{StaticResource WhiteBrush}" Content="AMS SERVER" HorizontalAlignment="Right" Margin="0,219,275,0" VerticalAlignment="Top" FontSize="11"/>
+                <Label Foreground="{StaticResource WhiteBrush}" Content="USERNAME" HorizontalAlignment="Right" Margin="0,294,275,0" VerticalAlignment="Top" FontSize="11"/>
+                <Label Foreground="{StaticResource WhiteBrush}" Content="PASSWORD" HorizontalAlignment="Right" Margin="0,330,275,0" VerticalAlignment="Top" FontSize="11"/>
+                <Label Foreground="{StaticResource WhiteBrush}" Content="DATABASE" HorizontalAlignment="Right" Margin="0,57,275,0" VerticalAlignment="Top" FontSize="11"/>
+                <Label Foreground="{StaticResource WhiteBrush}" Content="AMS SERVER" HorizontalAlignment="Right" Margin="0,257,275,0" VerticalAlignment="Top" FontSize="11"/>
+            </Grid>
+        </Controls:Flyout>
+
+    </Grid>
+</Controls:MetroWindow>

@@ -49,7 +49,7 @@ namespace Payroll_.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("IfHugVRq8Eb4guCho2OvQBT3MDwkfZRV8aygaM/AmGY=")]
+        [global::System.Configuration.DefaultSettingValueAttribute("121.58.217.123")]
         public string Mandaluyong {
             get {
                 return ((string)(this["Mandaluyong"]));
@@ -61,7 +61,7 @@ namespace Payroll_.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("RpeFMfToTp6iw3cr1Q893Z++WxO+6b1e")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10.10.9.158")]
         public string Makati {
             get {
                 return ((string)(this["Makati"]));
@@ -80,18 +80,6 @@ namespace Payroll_.Properties {
             }
             set {
                 this["ODBC"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ADMXSRV04")]
-        public string AMS {
-            get {
-                return ((string)(this["AMS"]));
-            }
-            set {
-                this["AMS"] = value;
             }
         }
         
@@ -116,6 +104,18 @@ namespace Payroll_.Properties {
             }
             set {
                 this["AMS_Password"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("112.198.55.209")]
+        public string Cebu {
+            get {
+                return ((string)(this["Cebu"]));
+            }
+            set {
+                this["Cebu"] = value;
             }
         }
     }

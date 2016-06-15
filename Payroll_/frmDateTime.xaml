@@ -7,7 +7,7 @@
         xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         GlowBrush="{DynamicResource AccentColorBrush}"
-        Title="Date and Time" Height="247" Width="475" Topmost="True" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" ResizeMode="NoResize" IsCloseButtonEnabled="False" IsMaxRestoreButtonEnabled="False" IsMinButtonEnabled="False">
+        Title="Date and Time" Height="247" Width="475" Topmost="True" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" ResizeMode="NoResize" IsCloseButtonEnabled="False" IsMaxRestoreButtonEnabled="False" IsMinButtonEnabled="False" >
     <Grid>
         <DatePicker x:Name="dtFrom" HorizontalAlignment="Left" Height="22" Margin="109,78,0,0" VerticalAlignment="Top" Width="192" SelectedDateFormat="Short" CalendarClosed="dtFrom_CalendarClosed" />
         <Label Content="Date From" HorizontalAlignment="Left" Height="26" Margin="26,78,0,0" VerticalAlignment="Top" Width="78"/>

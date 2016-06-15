@@ -24,12 +24,13 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
 
+
 namespace Payroll_
 {
     /// <summary>
     /// Interaction logic for PPeriod.xaml
     /// </summary>
-    public partial class PPeriod 
+    public partial class PPeriod : MetroWindow
     {
         
         MySqlDataReader MyReader;
@@ -81,6 +82,8 @@ namespace Payroll_
 
         private async void btProceed_Click(object sender, RoutedEventArgs e)
         {
+
+            //await (Application.Current.MainWindow as Window1).ShowMessageAsync("TEST", "123");
          
             int i = 0;
             object item = dtPperiod.SelectedItems[i];
@@ -102,7 +105,7 @@ namespace Payroll_
                 ColorScheme = MetroDialogOptions.ColorScheme
             };
 
-            MessageDialogResult result = await this.ShowMessageAsync("Total Record Found : " + Count, "If you want New Transaction click 'Create New' " +
+            MessageDialogResult result = await (Application.Current.MainWindow as Window1).ShowMessageAsync("Total Record Found : " + Count, "If you want New Transaction click 'Create New' " +
                                             Environment.NewLine + "NO if transaction is already existing",
                 MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, mySettings);
 
@@ -150,7 +153,9 @@ namespace Payroll_
         public  async void empLISt(int _PayrollID, DateTime PayrollStart, DateTime PayrollEnd, DateTime MataStart, DateTime MataEnd)
         {
             Double CTR=0;
-            var controller = await this.ShowProgressAsync("Please wait...", "LOADING!");
+            Window1 _W = new Window1();
+
+            var controller = await (Application.Current.MainWindow as Window1).ShowProgressAsync("Please wait...", "LOADING!");
             controller.SetIndeterminate();
             await TaskEx.Delay(1500);
             controller.SetCancelable(true);    
@@ -163,40 +168,49 @@ namespace Payroll_
             _HolidayCount = _clsTotalEmpCalc.getHoliday(MataStart, MataEnd);
 
 
-            _Database.Open("select concat(ifnull(fld_FirstName,'') ,' ', ifnull(fld_MiddleName,'') , ' ' ,ifnull(fld_LastName,'')) as 'FullName' ,fld_IDNumber from admx_hrisp.tbl_empmasterfile where fld_IsActive = true " + //" and fld_IDNumber in ('20110020') " + // " and fld_IDNumber in ('20160054','20140101','20130042','20140108','20130033','20140126','20160179','20150233','20140171','20130045') " +
-                "order by fld_FirstName");
+            _Database.Open("select concat(ifnull(fld_FirstName,'') ,' ', ifnull(fld_MiddleName,'') , ' ' ,ifnull(fld_LastName,'')) as 'FullName' ,fld_IDNumber, " +
+                            "S.fld_StaticParamDesc from admx_hrisp.tbl_empmasterfile E inner join admx_hrisp.tbl_staticparam S on E.fld_EmpStat = S.fld_staticparamid where E.fld_IsActive = true and S.fld_CategoryID = 8 order by fld_FirstName");
             {
                 while (_Database.Reader.Read())
                 {
+                    //var Controller = await (Window1.GetWindow(this) as Window1).ShowProgressAsync("Download", "Success");
+
                     var _Val = await Task.Run(() => _clsTotalEmpCalc.get_Regular_Absences_Late(_Database.Reader["fld_IDNumber"].ToString(), MataStart, MataEnd));
                     var _LeaveVal = await Task.Run(() =>  _clsTotalEmpCalc.getLeaves(_Database.Reader["fld_IDNumber"].ToString()));
-
                     _Ins = await Task.Run(() => _Ins + "(" +
                     _PayrollID + "," +
-                    _Database.Reader["fld_IDNumber"].ToString() + "," +
-                    _clsTotalEmpCalc.getMATA(_Database.Reader["fld_IDNumber"].ToString(), MataStart, MataEnd) + "," +
-                    _Val.Item1 + "," +
+                    _Database.Reader["fld_IDNumber"].ToString() + ",'" +
+                    _Database.Reader["fld_StaticParamDesc"].ToString() + "'," +
+                    _Val.Item1   + "," +
+                    _Val.Item2 + "," +
                     _HolidayCount + "," +
                     _clsTotalEmpCalc.getRegularOT(_Database.Reader["fld_IDNumber"].ToString(), _PayrollID) + "," +
                     _clsTotalEmpCalc.getRestDayOT(_Database.Reader["fld_IDNumber"].ToString(), _PayrollID) + "," +
                     _clsTotalEmpCalc.getHolidayOT(_Database.Reader["fld_IDNumber"].ToString(), _PayrollID) + "," +
                     _clsTotalEmpCalc.getSpecialHolidayOT(_Database.Reader["fld_IDNumber"].ToString(), _PayrollID) + "," +
-                    _Val.Item2 + "," +
                     _Val.Item3 + "," +
+                    _Val.Item4 + "," +
                     _LeaveVal.Item1 + "," +
                     _LeaveVal.Item2 + "," +
-                    _Val.Item4 +"),");
+                    _Val.Item5 +"),");
 
 
                     CTR++;
-                    await Task.Run(() => controller.SetMessage("(" + String.Format("{0:0.##}", (CTR / totEmpCount) * 100) + "%) Employee : " + _Database.Reader["FullName"].ToString() + "..."));
+                    await Task.Run(() => controller.SetMessage("[" + String.Format("{0:0.##}", (CTR / totEmpCount) * 100) + "%] Employee : " + _Database.Reader["FullName"].ToString() + "..."));
 
                     if (controller.IsCanceled) break; 
                     await TaskEx.Delay(50);
                                       
                 } _Database.Reader.Close();
-                if (_Ins.Length > 0) using (Database _DBins = new Database()) _DBins.Execute("INSERT INTO admx_hrisp.pp_tempattendances ( PayrollId,EmployeeNo,Total,Regular,LegalHoliday,OTRegular,OTRestday,OTLegalHoliday,OTSpecialHoliday,Absences,Tardiness,VL,SL,LWOP) VALUES " +
-                                     _Ins.PadRight(_Ins.Length - 1).Substring(0, _Ins.Length - 1).Trim());
+                if (_Ins.Length > 0)
+                {
+                    using (Database _DBins = new Database()) _DBins.Execute("INSERT INTO admx_hrisp.pp_tempattendances ( PayrollId,EmployeeNo,EmpStatus,Total,Regular,LegalHoliday,OTRegular,OTRestday,OTLegalHoliday,OTSpecialHoliday,Absences,Tardiness,VL,SL,LWOP) VALUES " +
+                    _Ins.PadRight(_Ins.Length - 1).Substring(0, _Ins.Length - 1).Trim());
+                    using (Database _DBups = new Database()) _DBups.Execute("UPDATE admx_hrisp.tbl_req_ot O inner join admx_hrisp.tbl_request R on R.fld_req_id = O.fld_req_id " +
+                                      "SET R.fld_isComputed = 1 " +
+                                      "where O.fld_PayrollID = " + _PayrollID + " and R.fld_isComputed = 0 and O.fld_status = 118;");
+
+                }
                 
                 }
             await controller.CloseAsync();
@@ -223,6 +237,7 @@ namespace Payroll_
 
         }
 
+        
      
       
     }

@@ -47,10 +47,10 @@
         	AutoGenerateColumns="False" CanUserAddRows="False"
         	IsReadOnly="True"
         	CanUserReorderColumns="False"
-        	AlternatingRowBackground="LightGray"     
+        	
         	Style="{DynamicResource AzureDataGrid}" 
         	Margin="10,11,419,14" 
-        	Cursor="" Background="White" 
+        	Cursor="" 
             GridLinesVisibility="All" 
         	BorderThickness="1" BorderBrush="#CC7F7F81" SelectionMode="Single" MouseDoubleClick="dtSchedules_MouseDoubleClick" SelectionChanged="dtSchedules_SelectionChanged" >
             <DataGrid.Columns>
@@ -100,7 +100,7 @@
         </DataGrid>
         <TextBox x:Name="txtSearchSchedName" Height="30" Margin="0,28,15,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="txtSearchSchedName_TextChanged" HorizontalAlignment="Right" Width="269" Controls:TextBoxHelper.UseFloatingWatermark="True" Controls:TextBoxHelper.Watermark="Search ..."/>
         <Label Content="Schedule Name" Margin="0,28,292,0" VerticalAlignment="Top" FontSize="12" HorizontalAlignment="Right" Width="92"/>
-        <ComboBox x:Name="cmbSchedType" HorizontalAlignment="Right" Height="22" Margin="0,63,15,0" VerticalAlignment="Top" Width="269"  DropDownClosed="cmbSchedType_DropDownClosed" DropDownOpened="cmbSchedType_DropDownOpened" SelectionChanged="cmbSchedType_SelectionChanged" IsEnabled="False"/>
+        <ComboBox x:Name="cmbSchedType" Controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Height="22" Margin="0,63,15,0" VerticalAlignment="Top" Width="269"  DropDownClosed="cmbSchedType_DropDownClosed" DropDownOpened="cmbSchedType_DropDownOpened" SelectionChanged="cmbSchedType_SelectionChanged" IsEnabled="False"/>
         <Label Content="Schedule Type" Margin="0,63,292,0" VerticalAlignment="Top" FontSize="12" HorizontalAlignment="Right" Width="92"/>
         <Label Content="*NOTE Use &quot;24hour format&quot; for PM" HorizontalAlignment="Right" Margin="0,375,162,0" VerticalAlignment="Top" FontSize="12" FontWeight="Bold" Foreground="#FFCF2626"/>
 

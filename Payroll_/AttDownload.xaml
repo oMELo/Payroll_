@@ -7,7 +7,7 @@
       mc:Ignorable="d"
 	Title="AttDownload" >
 
-    <Grid Background="White"  >
+    <Grid  >
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
@@ -17,10 +17,10 @@
 			AutoGenerateColumns="False" CanUserAddRows="False"
 			VerticalGridLinesBrush="AliceBlue"
 			CanUserReorderColumns="False"
-			AlternatingRowBackground="LightGray"     
+			     
 			Style="{DynamicResource AzureDataGrid}" 
 			Margin="10,24,206,10" 
-			Cursor="" Background="White" GridLinesVisibility="All" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" SelectionChanged="dtSite_SelectionChanged" MouseDoubleClick="dtSite_MouseDoubleClick"   >
+			Cursor="" GridLinesVisibility="All" BorderThickness="1,0,0,0" BorderBrush="#CC7F7F81" SelectionMode="Single" SelectionChanged="dtSite_SelectionChanged" MouseDoubleClick="dtSite_MouseDoubleClick"   >
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn 
 					ElementStyle="{DynamicResource MetroDataGridCheckBox}"

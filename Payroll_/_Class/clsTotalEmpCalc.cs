@@ -187,32 +187,25 @@ namespace Payroll_
             }
         }
        
-        public  Tuple<Double, Double,Double,String> get_Regular_Absences_Late(string _EmpNo,  DateTime PayrollStart, DateTime PayrollEnd)
+        public  Tuple<Int32,Double, Double,Double,String> get_Regular_Absences_Late(string _EmpNo,  DateTime PayrollStart, DateTime PayrollEnd)
         {
-            
+            MySqlCommand command;
+            Int32 Mata = 0;
             double Regular =0;
             double _TotAbsences = 0;
             string _LWOP = "";
             TimeSpan A = PayrollEnd - PayrollStart;
             TimeSpan _TotalLate = TimeSpan.Zero;
-            
-            //string tempLate;
+
+        
             using (Database _dbRD = new Database())
             {
+               
                 for (int _absences = 0; _absences <= A.Days; _absences++)
                 {
                     
                     DateTime dtANS = PayrollStart.AddDays(_absences);
-                    //_holDB.Open("SELECT count(*) as Count FROM admx_hrisp.pp_holidaylist where date_format(HolidayDate,'%m/%d/%Y') = '" + String.Format("{0:MM/dd/yyyy}", dtANS) + "'");
-                    
 
-                    //while (_holDB.Reader.Read())
-                    //{
-                    //    if (_holDB.Reader["Count"].ToString() == "1")
-                    //     {
-                    //         _holDB.Reader.Close(); _holDB.Connection.Close(); goto JUMP;
-                    //     }
-                    //}
 
                     using (Database _HolidayDB = new Database())
                     {
@@ -224,293 +217,354 @@ namespace Payroll_
                     }
 
 
-                    MySqlCommand command = new MySqlCommand("Select * from  admx_hrisp.pp_schedules where SchedID = " + getSchedule(_EmpNo, string.Format("{0:yyyy-MM-dd}", dtANS)), _dbRD.Connection);
-                    
+                using(command = new MySqlCommand("Select * from  admx_hrisp.pp_schedules where SchedID = " + getSchedule(_EmpNo, string.Format("{0:yyyy-MM-dd}", dtANS)), _dbRD.Connection))
+               
+                {
                     _Absences = command.ExecuteReader();
                     {
                        
                         while (_Absences.Read())
                         {
                                 TimeSpan late = TimeSpan.Zero; 
-                                Database _curDb = new Database();
+                               
                                 switch (string.Format("{0:dddd}", dtANS))
                                 {
                                     case "Sunday":
-                                        if (_Absences["SunIN"].ToString() != "00:00:00")
-                                        {                                           
-                                                if (isLeave(_EmpNo, dtANS) == false)
-                                                { 
-                                                
-                                                
+                                      
+                                            if (isLeave(_EmpNo, dtANS) == false)
+                                            {
+
+                                                using (Database _curDb = new Database())
+                                                {
                                                     MySqlCommand _CtrAbsence = new MySqlCommand("select count(*) as Count,ifnull(if( date_format(EC._DateIN, '%H:%i:%s') <'" + _Absences["SunIN"].ToString() + "','00:00:00'  ,TIMEDIFF(date_format( EC._DateIN, '%H:%i:%s') ,'" + _Absences["SunIN"].ToString() + "')),'00:00:00') as Late,EC._DateIN,EC._DateOUT  from admx_hrisp.pp_empclocks EC " +
                                                                                             "where  _EmpID = " + _EmpNo + " and (Date_format( EC._DateIN,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "' or Date_format( EC._DateOUT,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "')", _curDb.Connection);
                                                     _AbsentCount = _CtrAbsence.ExecuteReader();
                                                     while (_AbsentCount.Read())
                                                     {
-                                                        if (_AbsentCount["Count"].ToString() == "0")
+                                                        if (_Absences["SunIN"].ToString() == "00:00:00" && _AbsentCount["_DateIN"].ToString() != "" || _AbsentCount["_DateOUT"].ToString() != "")
+                                                        {
+                                                            Mata++;
+                                                        }
+
+                                                        else if (_AbsentCount["Count"].ToString() == "0")
                                                         {
                                                             _TotAbsences = _TotAbsences + 1;
-                                                            _LWOP =string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP  ;
+                                                            _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP;
                                                         }
+
                                                         else if (_AbsentCount["_DateIN"].ToString() == "" || _AbsentCount["_DateOUT"].ToString() == "")
                                                         {
+                                                            Mata++;
                                                             _TotAbsences = _TotAbsences + .5;
                                                             _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Halfday~" + _LWOP;
                                                         }
                                                         else if (Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
                                                         {
+                                                            Mata++;
                                                             late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
                                                         }
-                                                      
-                      
+                                                        else Mata++;
+
                                                     } _AbsentCount.Close();
                                                 }
-                                                else _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Leave" + _LWOP;
-                                             
+                                            }
+                                            else _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Leave" + _LWOP;
                                         
-                                        }
-                                       
+                                                    
                                         break;
                                     case "Monday":
                                         Regular++;
-                                        if (_Absences["MonIN"].ToString() != "00:00:00")
-                                        {
+                                        
                                             if (isLeave(_EmpNo, dtANS) == false)
                                             {
-                                                
-                                                MySqlCommand _CtrAbsence = new MySqlCommand("select count(*) as Count,ifnull(if( date_format(EC._DateIN, '%H:%i:%s') <'" + _Absences["MonIN"].ToString() + "','00:00:00'  ,TIMEDIFF(date_format( EC._DateIN, '%H:%i:%s') ,'" + _Absences["MonIN"].ToString() + "')),'00:00:00') as Late,EC._DateIN,EC._DateOUT from admx_hrisp.pp_empclocks EC " +
-                                                                                            "where  _EmpID = " + _EmpNo + " and (Date_format( EC._DateIN,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "' or Date_format( EC._DateOUT,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "')", _curDb.Connection);
-                                                _AbsentCount = _CtrAbsence.ExecuteReader();
-
-                                                while (_AbsentCount.Read())
+                                                using (Database _curDb = new Database())
                                                 {
-                                                    if (_AbsentCount["Count"].ToString() == "0")
+                                                    MySqlCommand _CtrAbsence = new MySqlCommand("select count(*) as Count,ifnull(if( date_format(EC._DateIN, '%H:%i:%s') <'" + _Absences["MonIN"].ToString() + "','00:00:00'  ,TIMEDIFF(date_format( EC._DateIN, '%H:%i:%s') ,'" + _Absences["MonIN"].ToString() + "')),'00:00:00') as Late,EC._DateIN,EC._DateOUT from admx_hrisp.pp_empclocks EC " +
+                                                                                                "where  _EmpID = " + _EmpNo + " and (Date_format( EC._DateIN,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "' or Date_format( EC._DateOUT,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "')", _curDb.Connection);
+                                                    _AbsentCount = _CtrAbsence.ExecuteReader();
+
+                                                    while (_AbsentCount.Read())
                                                     {
-                                                        _TotAbsences = _TotAbsences + 1;
-                                                        _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP;
-                                                    }
-                                                    else if (_AbsentCount["_DateIN"].ToString() == "" || _AbsentCount["_DateOUT"].ToString() == "")
-                                                    {
-                                                        _TotAbsences = _TotAbsences + .5;
-                                                        _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Halfday~" + _LWOP;
-                                                    }
-                                                    //else late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
-                                                    else if (Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
-                                                    {
-                                                        late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
-                                                    }
-                                                } _AbsentCount.Close();
+                                                        if (_Absences["MonIN"].ToString() == "00:00:00" && _AbsentCount["_DateIN"].ToString() != "" || _AbsentCount["_DateOUT"].ToString() != "")
+                                                        {
+                                                            Mata++;
+                                                        }
+
+                                                        else if (_AbsentCount["Count"].ToString() == "0")
+                                                        {
+                                                            _TotAbsences = _TotAbsences + 1;
+                                                            _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP;
+                                                        }
+                                                        else if (_AbsentCount["_DateIN"].ToString() == "" || _AbsentCount["_DateOUT"].ToString() == "")
+                                                        {
+                                                            Mata++;
+                                                            _TotAbsences = _TotAbsences + .5;
+                                                            _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Halfday~" + _LWOP;
+                                                        }
+                                                        else if (Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
+                                                        {
+                                                            Mata++;
+                                                            late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
+                                                        }
+                                                        else Mata++;
+                                                    } _AbsentCount.Close();
+                                                }
                                             }
                                             else _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Leave" + _LWOP;
-                                        }
+                                        
+                                     
                                         break;
                                     case "Tuesday":
                                         Regular++;
-                                        if (_Absences["TueIN"].ToString() != "00:00:00")
-                                        {
+                                      
                                             if (isLeave(_EmpNo, dtANS) == false)
                                             {
-                                               
-                                                MySqlCommand _CtrAbsence = new MySqlCommand("select count(*) as Count,ifnull(if( date_format(EC._DateIN, '%H:%i:%s') <'" + _Absences["TueIN"].ToString() + "','00:00:00'  ,TIMEDIFF(date_format( EC._DateIN, '%H:%i:%s') ,'" + _Absences["TueIN"].ToString() + "')),'00:00:00') as Late,EC._DateIN,EC._DateOUT  from admx_hrisp.pp_empclocks EC " +
-                                                                                            "where  _EmpID = " + _EmpNo + " and (Date_format( EC._DateIN,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "' or Date_format( EC._DateOUT,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "')", _curDb.Connection);
-                                                _AbsentCount = _CtrAbsence.ExecuteReader();
-
-                                                while (_AbsentCount.Read())
+                                                using (Database _curDb = new Database())
                                                 {
-                                                    if (_AbsentCount["Count"].ToString() == "0" && Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
+                                                    MySqlCommand _CtrAbsence = new MySqlCommand("select count(*) as Count,ifnull(if( date_format(EC._DateIN, '%H:%i:%s') <'" + _Absences["TueIN"].ToString() + "','00:00:00'  ,TIMEDIFF(date_format( EC._DateIN, '%H:%i:%s') ,'" + _Absences["TueIN"].ToString() + "')),'00:00:00') as Late,EC._DateIN,EC._DateOUT  from admx_hrisp.pp_empclocks EC " +
+                                                                                                "where  _EmpID = " + _EmpNo + " and (Date_format( EC._DateIN,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "' or Date_format( EC._DateOUT,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "')", _curDb.Connection);
+                                                    _AbsentCount = _CtrAbsence.ExecuteReader();
+
+                                                    while (_AbsentCount.Read())
                                                     {
-                                                        _TotAbsences = _TotAbsences + 1;
-                                                        _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP;
-                                                    }
-                                                    else if (_AbsentCount["_DateIN"].ToString() == "" || _AbsentCount["_DateOUT"].ToString() == "")
-                                                    {
-                                                        _TotAbsences = _TotAbsences + .5;
-                                                        _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Halfday~" + _LWOP;
-                                                    }
-                                                    else if (Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
-                                                    {
-                                                        late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
-                                                    }
-                                             
-                                                } _AbsentCount.Close();
+                                                        if (_Absences["TueIN"].ToString() == "00:00:00" && _AbsentCount["_DateIN"].ToString() != "" || _AbsentCount["_DateOUT"].ToString() != "")
+                                                        {
+                                                            Mata++;
+                                                        }
+
+                                                        else if (_AbsentCount["Count"].ToString() == "0" && Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
+                                                        {
+                                                            _TotAbsences = _TotAbsences + 1;
+                                                            _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP;
+                                                        }
+                                                        else if (_AbsentCount["_DateIN"].ToString() == "" || _AbsentCount["_DateOUT"].ToString() == "")
+                                                        {
+                                                            Mata++;
+                                                            _TotAbsences = _TotAbsences + .5;
+                                                            _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Halfday~" + _LWOP;
+                                                        }
+                                                        else if (Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
+                                                        {
+                                                            Mata++;
+                                                            late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
+                                                        }
+                                                        else Mata++;
+
+                                                    } _AbsentCount.Close();
+                                                }
                                             }
-                                        }
-                                       
+                                        
+                                                    
                                         break;
                                     case "Wednesday":
                                         Regular++;
-                                        if (_Absences["WedIN"].ToString() != "00:00:00")
-                                        {
-                                          if (  isLeave(_EmpNo, dtANS) == false)
-                                          {
-                                           
-                                            MySqlCommand _CtrAbsence = new MySqlCommand("select count(*) as Count,ifnull(if( date_format(EC._DateIN, '%H:%i:%s') <'" + _Absences["WedIN"].ToString() + "','00:00:00'  ,TIMEDIFF(date_format( EC._DateIN, '%H:%i:%s') ,'" + _Absences["WedIN"].ToString() + "')),'00:00:00') as Late,EC._DateIN,EC._DateOUT      from admx_hrisp.pp_empclocks EC " +
-                                                                                        "where  _EmpID = " + _EmpNo + " and (Date_format( EC._DateIN,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "' or Date_format( EC._DateOUT,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "')", _curDb.Connection);
-                                            _AbsentCount = _CtrAbsence.ExecuteReader();
-
-                                            while (_AbsentCount.Read())
+                                       
+                                            if (isLeave(_EmpNo, dtANS) == false)
                                             {
-                                                if (_AbsentCount["Count"].ToString() == "0")
+                                                using (Database _curDb = new Database())
                                                 {
-                                                    _TotAbsences = _TotAbsences + 1;
-                                                    _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP;
+                                                    MySqlCommand _CtrAbsence = new MySqlCommand("select count(*) as Count,ifnull(if( date_format(EC._DateIN, '%H:%i:%s') <'" + _Absences["WedIN"].ToString() + "','00:00:00'  ,TIMEDIFF(date_format( EC._DateIN, '%H:%i:%s') ,'" + _Absences["WedIN"].ToString() + "')),'00:00:00') as Late,EC._DateIN,EC._DateOUT      from admx_hrisp.pp_empclocks EC " +
+                                                                                                "where  _EmpID = " + _EmpNo + " and (Date_format( EC._DateIN,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "' or Date_format( EC._DateOUT,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "')", _curDb.Connection);
+                                                    _AbsentCount = _CtrAbsence.ExecuteReader();
+
+                                                    while (_AbsentCount.Read())
+                                                    {
+                                                        if (_Absences["WedIN"].ToString() == "00:00:00" && _AbsentCount["_DateIN"].ToString() != "" || _AbsentCount["_DateOUT"].ToString() != "")
+                                                        {
+                                                            Mata++;
+                                                        }
+
+                                                        else if (_AbsentCount["Count"].ToString() == "0")
+                                                        {
+                                                            _TotAbsences = _TotAbsences + 1;
+                                                            _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP;
+                                                        }
+                                                        else if (_AbsentCount["_DateIN"].ToString() == "" || _AbsentCount["_DateOUT"].ToString() == "")
+                                                        {
+                                                            Mata++;
+                                                            _TotAbsences = _TotAbsences + .5;
+                                                            _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Halfday~" + _LWOP;
+                                                        }
+                                                        else if (Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
+                                                        {
+                                                            Mata++;
+                                                            late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
+                                                        }
+                                                        else Mata++;
+                                                    } _AbsentCount.Close();
                                                 }
-                                                else if (_AbsentCount["_DateIN"].ToString() == "" || _AbsentCount["_DateOUT"].ToString() == "")
-                                                {
-                                                    _TotAbsences = _TotAbsences + .5;
-                                                    _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Halfday~" + _LWOP;
-                                                }
-                                                else if (Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
-                                                {
-                                                    late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
-                                                }
-                                            } _AbsentCount.Close();
-                                          }
-                                          else _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Leave" + _LWOP;
-                                        }
+                                            }
+                                            else _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Leave" + _LWOP;
                                         
+                                  
                                         break;
                                     case "Thursday":
                                         Regular++;
-                                        if (_Absences["ThuIN"].ToString() != "00:00:00")
-                                        {
-                                            if (isLeave(_EmpNo, dtANS) == false)
+                                           if (isLeave(_EmpNo, dtANS) == false)
                                             {
-                                                
-                                                MySqlCommand _CtrAbsence = new MySqlCommand("select count(*) as Count,ifnull(if( date_format(EC._DateIN, '%H:%i:%s') <'" + _Absences["ThuIN"].ToString() + "','00:00:00'  ,TIMEDIFF(date_format( EC._DateIN, '%H:%i:%s') ,'" + _Absences["ThuIN"].ToString() + "')),'00:00:00') as Late,EC._DateIN,EC._DateOUT  from admx_hrisp.pp_empclocks EC " +
-                                                                                            "where  _EmpID = " + _EmpNo + " and (Date_format( EC._DateIN,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "' or Date_format( EC._DateOUT,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "')", _curDb.Connection);
-                                                _AbsentCount = _CtrAbsence.ExecuteReader();
-
-                                                while (_AbsentCount.Read())
+                                                using (Database _curDb = new Database())
                                                 {
-                                                    if (_AbsentCount["Count"].ToString() == "0")
-                                                    {
-                                                        _TotAbsences = _TotAbsences + 1;
-                                                        _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP;
-                                                    }
-                                                    else if (_AbsentCount["_DateIN"].ToString() == "" || _AbsentCount["_DateOUT"].ToString() == "")
-                                                    {
-                                                        _TotAbsences = _TotAbsences + .5;
-                                                        _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Halfday~" + _LWOP;
-                                                    }
-                                                    else if (Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
-                                                    {
-                                                        late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
-                                                    }
+                                                    MySqlCommand _CtrAbsence = new MySqlCommand("select count(*) as Count,ifnull(if( date_format(EC._DateIN, '%H:%i:%s') <'" + _Absences["ThuIN"].ToString() + "','00:00:00'  ,TIMEDIFF(date_format( EC._DateIN, '%H:%i:%s') ,'" + _Absences["ThuIN"].ToString() + "')),'00:00:00') as Late,EC._DateIN,EC._DateOUT  from admx_hrisp.pp_empclocks EC " +
+                                                                                                "where  _EmpID = " + _EmpNo + " and (Date_format( EC._DateIN,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "' or Date_format( EC._DateOUT,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "')", _curDb.Connection);
+                                                    _AbsentCount = _CtrAbsence.ExecuteReader();
 
-                                                } _AbsentCount.Close();
+                                                    while (_AbsentCount.Read())
+                                                    {
+                                                        if (_Absences["ThuIN"].ToString() == "00:00:00" && _AbsentCount["_DateIN"].ToString() != "" || _AbsentCount["_DateOUT"].ToString() != "")
+                                                        {
+                                                            Mata++;
+                                                        }
+
+                                                        else if (_AbsentCount["Count"].ToString() == "0")
+                                                        {
+                                                            _TotAbsences = _TotAbsences + 1;
+                                                            _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP;
+                                                        }
+                                                        else if (_AbsentCount["_DateIN"].ToString() == "" || _AbsentCount["_DateOUT"].ToString() == "")
+                                                        {
+                                                            Mata++;
+                                                            _TotAbsences = _TotAbsences + .5;
+                                                            _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Halfday~" + _LWOP;
+                                                        }
+                                                        else if (Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
+                                                        {
+                                                            Mata++;
+                                                            late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
+                                                        }
+                                                        else Mata++;
+                                                    } _AbsentCount.Close();
+                                                }
                                             }
                                             else _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Leave" + _LWOP;
-                                        }
                                         
+                                      
                                         break;
                                     case "Friday":
                                         Regular++;
-                                        if (_Absences["FriIN"].ToString() != "00:00:00")
-                                        {
-                                            
+                                       
+
                                             if (isLeave(_EmpNo, dtANS) == false)
                                             {
-                                               
-                                                MySqlCommand _CtrAbsence = new MySqlCommand("select count(*) as Count,ifnull(if( date_format(EC._DateIN, '%H:%i:%s') <'" + _Absences["FriIN"].ToString() + "','00:00:00'  ,TIMEDIFF(date_format( EC._DateIN, '%H:%i:%s') ,'" + _Absences["FriIN"].ToString() + "')),'00:00:00') as Late,EC._DateIN,EC._DateOUT  from admx_hrisp.pp_empclocks EC " +
-                                                                                            "where  _EmpID = " + _EmpNo + " and (Date_format( EC._DateIN,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "' or Date_format( EC._DateOUT,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "')", _curDb.Connection);
-                                                _AbsentCount = _CtrAbsence.ExecuteReader();
-                                               
-                                                while (_AbsentCount.Read())
-                                               
+                                                using (Database _curDb = new Database())
                                                 {
-                                                    if (_AbsentCount["Count"].ToString() == "0")
+                                                    MySqlCommand _CtrAbsence = new MySqlCommand("select count(*) as Count,ifnull(if( date_format(EC._DateIN, '%H:%i:%s') <'" + _Absences["FriIN"].ToString() + "','00:00:00'  ,TIMEDIFF(date_format( EC._DateIN, '%H:%i:%s') ,'" + _Absences["FriIN"].ToString() + "')),'00:00:00') as Late,EC._DateIN,EC._DateOUT  from admx_hrisp.pp_empclocks EC " +
+                                                                                                "where  _EmpID = " + _EmpNo + " and (Date_format( EC._DateIN,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "' or Date_format( EC._DateOUT,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "')", _curDb.Connection);
+                                                    _AbsentCount = _CtrAbsence.ExecuteReader();
+
+                                                    while (_AbsentCount.Read())
                                                     {
-                                                        _TotAbsences = _TotAbsences + 1;
-                                                        _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP;
-                                                    }
-                                                    else if (_AbsentCount["_DateIN"].ToString() == "" || _AbsentCount["_DateOUT"].ToString() == "")
-                                                    {
-                                                        _TotAbsences = _TotAbsences + .5;
-                                                        _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Halfday~" + _LWOP;
-                                                    }
-                                                    else if (Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
-                                                    {
-                                                        late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
-                                                    }
-                                                 
-                                                } _AbsentCount.Close();
+                                                        if (_Absences["FriIN"].ToString() == "00:00:00" && _AbsentCount["_DateIN"].ToString() != "" || _AbsentCount["_DateOUT"].ToString() != "")
+                                                        {
+                                                            Mata++;
+                                                        }
+
+                                                        else if (_AbsentCount["Count"].ToString() == "0")
+                                                        {
+                                                            _TotAbsences = _TotAbsences + 1;
+                                                            _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP;
+                                                        }
+                                                        else if (_AbsentCount["_DateIN"].ToString() == "" || _AbsentCount["_DateOUT"].ToString() == "")
+                                                        {
+                                                            Mata++;
+                                                            _TotAbsences = _TotAbsences + .5;
+                                                            _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Halfday~" + _LWOP;
+                                                        }
+                                                        else if (Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
+                                                        {
+                                                            Mata++;
+                                                            late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
+                                                        }
+                                                        else Mata++;
+                                                    } _AbsentCount.Close();
+                                                }
                                             }
                                             else _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Leave" + _LWOP;
-                                        }
                                         
+                                  
                                         break;
 
 
                                     case "Saturday":
-                                        if (_Absences["SatIN"].ToString() != "00:00:00")
-                                        {
+                                        
                                             if (isLeave(_EmpNo, dtANS) == false)
                                             {
-                                               
-                                                MySqlCommand _CtrAbsence = new MySqlCommand("select count(*) as Count,ifnull(if( date_format(EC._DateIN, '%H:%i:%s') <'" + _Absences["FriIN"].ToString() + "','00:00:00'  ,TIMEDIFF(date_format( EC._DateIN, '%H:%i:%s') ,'" + _Absences["FriIN"].ToString() + "')),'00:00:00') as Late,EC._DateIN,EC._DateOUT   from admx_hrisp.pp_empclocks EC " +
-                                                                                            "where  _EmpID = " + _EmpNo + " and (Date_format( EC._DateIN,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "' or Date_format( EC._DateOUT,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "')", _curDb.Connection);
-                                                _AbsentCount = _CtrAbsence.ExecuteReader();
-
-                                                while (_AbsentCount.Read())
+                                                using (Database _curDb = new Database())
                                                 {
-                                                    if (_AbsentCount["Count"].ToString() == "0")
+                                                    MySqlCommand _CtrAbsence = new MySqlCommand("select count(*) as Count,ifnull(if( date_format(EC._DateIN, '%H:%i:%s') <'" + _Absences["FriIN"].ToString() + "','00:00:00'  ,TIMEDIFF(date_format( EC._DateIN, '%H:%i:%s') ,'" + _Absences["FriIN"].ToString() + "')),'00:00:00') as Late,EC._DateIN,EC._DateOUT   from admx_hrisp.pp_empclocks EC " +
+                                                                                                "where  _EmpID = " + _EmpNo + " and (Date_format( EC._DateIN,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "' or Date_format( EC._DateOUT,'%Y-%m-%d') ='" + string.Format("{0:yyyy-MM-dd}", dtANS) + "')", _curDb.Connection);
+                                                    _AbsentCount = _CtrAbsence.ExecuteReader();
+
+                                                    while (_AbsentCount.Read())
                                                     {
-                                                        _TotAbsences = _TotAbsences + 1;
-                                                        _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP;
-                                                    }
-                                                    else if (_AbsentCount["_DateIN"].ToString() == "" || _AbsentCount["_DateOUT"].ToString() == "")
-                                                    {
-                                                        _TotAbsences = _TotAbsences + .5;
-                                                        _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Halfday~" + _LWOP;
-                                                    }
-                                                    else if (Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
-                                                    {
-                                                        late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
-                                                    }
-                                         
-                                                } _AbsentCount.Close();
+                                                        if (_Absences["SatIN"].ToString() == "00:00:00" && _AbsentCount["_DateIN"].ToString() != "" || _AbsentCount["_DateOUT"].ToString() != "")
+                                                        {
+                                                            Mata++;
+                                                        }
+
+                                                        else if (_AbsentCount["Count"].ToString() == "0")
+                                                        {
+                                                            _TotAbsences = _TotAbsences + 1;
+                                                            _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Absent~" + _LWOP;
+                                                        }
+                                                        else if (_AbsentCount["_DateIN"].ToString() == "" || _AbsentCount["_DateOUT"].ToString() == "")
+                                                        {
+                                                            Mata++;
+                                                            _TotAbsences = _TotAbsences + .5;
+                                                            _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Halfday~" + _LWOP;
+                                                        }
+                                                        else if (Convert.ToInt32(_Absences["TypeID"].ToString()) != 3)
+                                                        {
+                                                            Mata++;
+                                                            late = TimeSpan.Parse(_AbsentCount["Late"].ToString());
+                                                        }
+                                                        else Mata++;
+
+                                                    } _AbsentCount.Close();
+                                                }
                                             }
                                             else _LWOP = string.Format("{0:MM/dd/yyyy}", dtANS) + " : Leave" + _LWOP;
-                                        }
+                                        
                                         
                                         break;
                                 }
 
                                 _TotalLate = _TotalLate.Add(late);
-                                _curDb.Connection.Close();
+                             
                             }        
                          _Absences.Close();
-                      
+                      }
                     } JUMP:;
+                
                 }
             }
 
          
-            return Tuple.Create(Regular, _TotAbsences, Convert.ToDouble(string.Format("{0:0.00}", Convert.ToDouble(((_TotalLate.Hours * 60) + (_TotalLate.Minutes))) / 60)), "'" + (_LWOP.Length == 0 ? "" :_LWOP.PadRight(_LWOP.Length - 1).Substring(0, _LWOP.Length - 1).Trim() ) + "'");
+            return Tuple.Create(Mata,Regular, _TotAbsences, Convert.ToDouble(string.Format("{0:0.00}", Convert.ToDouble(((_TotalLate.Hours * 60) + (_TotalLate.Minutes))) / 60)), "'" + (_LWOP.Length == 0 ? "" :_LWOP.PadRight(_LWOP.Length - 1).Substring(0, _LWOP.Length - 1).Trim() ) + "'");
            
         }
         public static Boolean isLeave(string _EmpID,DateTime DateLeave)
         {
             MySqlCommand leave;
             Boolean Ans=false;
-                //
-                using (Database _Leave = new Database())
+                
+                for (int i = 54; i <= 58; i++)
                 {
-                    for (int i = 54; i <= 58; i++)
+                    if (i == 57) goto Jump;
+                    using (Database _Leave = new Database())
                     {
-                        if (i == 57) goto Jump;
-                        leave = new MySqlCommand("select admx_hrisp.isLeave(" + _EmpID + ",'" + string.Format("{0:yyyy-MM-dd}", DateLeave) + "'," + i + ")", _Leave.Connection);
-         
-                        if (Convert.ToBoolean(leave.ExecuteScalar()) == true) return true;
-                       
-           
-                    Jump: ;
-                    }
-                    return Ans;
-           
-                } 
 
+
+                        using (leave = new MySqlCommand("select admx_hrisp.isLeave(" + _EmpID + ",'" + string.Format("{0:yyyy-MM-dd}", DateLeave) + "'," + i + ")", _Leave.Connection))
+                        {
+                            if (Convert.ToBoolean(leave.ExecuteScalar()) == true) return true;
+                        }
+
+                    }
+                    Jump: ;
+                   
+           
+                }
+                return Ans;
         }
        
         public Tuple<Double, Double> getLeaves(string _EmpNO)

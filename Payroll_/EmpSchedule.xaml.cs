@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,19 +13,23 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.IO;
 using MahApps;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using System.ComponentModel;
+using MySql.Data.MySqlClient;
 using AdmereX;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Drawing;
+using System.Threading;
+
 namespace Payroll_
 {
     /// <summary>
     /// Interaction logic for EmpSchedule.xaml
     /// </summary>
     /// 
-    public partial class EmpSchedule : UserControl
+    public partial class EmpSchedule  
     {
 
        
@@ -41,19 +46,19 @@ namespace Payroll_
         public void getEMP(string _Condition)
         {
 
-            //SEARCHLIST("select E.fld_IDNumber as _EmpID , concat(ifnull(fld_FirstName,'') ,' ', ifnull(fld_MiddleName,'') , ' ' ,ifnull(fld_LastName,'')) as _Name, " +
-            //                "(select Count( SchedID) from admx_hrisp.pp_empschedules where empNO = E.fld_idnumber ) as Count ,S.fld_StaticParamDesc as Department,S2.fld_StaticParamDesc as JobTitle " +
-            //                "from  admx_hrisp.tbl_empmasterfile  E " +
-            //                "left join admx_hrisp.tbl_workassignment W " +
-            //                "on E.fld_idnumber = W.fld_idnumber " +
-            //                "left join admx_hrisp.tbl_staticparam S  " +
-            //                "on S.fld_staticparamid = W.fld_spidDepartment " +
-            //                "left join admx_hrisp.tbl_workassignment W2 " +
-            //                "on E.fld_idnumber = W2.fld_idnumber " +
-            //                "left join admx_hrisp.tbl_staticparam S2  " +
-            //                "on S2.fld_staticparamid = W2.fld_spidJobTitle " + _Condition + " order by E.fld_FirstName");
-            //dt.ItemsSource = "";
-            //dt.ItemsSource = clsSchedule._EmpSchedList;
+            SEARCHLIST("select E.fld_IDNumber as _EmpID , concat(ifnull(fld_FirstName,'') ,' ', ifnull(fld_MiddleName,'') , ' ' ,ifnull(fld_LastName,'')) as _Name, " +
+                            "(select Count( SchedID) from admx_hrisp.pp_empschedules where empNO = E.fld_idnumber ) as Count ,S.fld_StaticParamDesc as Department,S2.fld_StaticParamDesc as JobTitle " +
+                            "from  admx_hrisp.tbl_empmasterfile  E " +
+                            "left join admx_hrisp.tbl_workassignment W " +
+                            "on E.fld_idnumber = W.fld_idnumber " +
+                            "left join admx_hrisp.tbl_staticparam S  " +
+                            "on S.fld_staticparamid = W.fld_spidDepartment " +
+                            "left join admx_hrisp.tbl_workassignment W2 " +
+                            "on E.fld_idnumber = W2.fld_idnumber " +
+                            "left join admx_hrisp.tbl_staticparam S2  " +
+                            "on S2.fld_staticparamid = W2.fld_spidJobTitle " + _Condition + "   order by E.fld_FirstName");
+            dt.ItemsSource = "";
+            dt.ItemsSource = clsSchedule._EmpSchedList;
 
             
         }
@@ -70,7 +75,7 @@ namespace Payroll_
        
         public List<clsSchedule> SEARCHLIST(String _Query)
         {
-
+            string _Image = "";
             using (Database _Database = new Database())
             {
                 clsSchedule._EmpSchedList.Clear();
@@ -78,10 +83,11 @@ namespace Payroll_
                 while (_Database.Reader.Read())
                 {
                     {
-                        //Content = "{StaticResource appbar_billing}";
+                        if (Convert.ToString(_Database.Reader["Count"].ToString()) == "0") _Image = "Images/error.ico";
+                        else _Image = "Images/Ok.png";
                         clsSchedule._EmpSchedList.Add(new clsSchedule()
                         {
-                             Image = "Images/Payment.ico",
+                            Image=_Image,
                             _empID = Convert.ToInt32(_Database.Reader["_EmpID"].ToString()),
                             _Name = Convert.ToString(_Database.Reader["_Name"].ToString()),
                              SchedCount = Convert.ToString(_Database.Reader["Count"].ToString()),
@@ -190,11 +196,24 @@ namespace Payroll_
 
             if (cmbSite.SelectedIndex >= 0)
             {
-                txtSearch.Text = "";
-                Site = " where fld_site=" + Convert.ToInt32(cmbSite.SelectedValue);
-                getEMP(Site);
-                dt.Columns[0].Visibility = Visibility.Visible;
-                dt.Columns[3].Visibility = Visibility.Visible;
+                if (cmbSite.SelectedIndex >= 0)
+                {
+                    FlyOut.IsOpen = false;
+                    dtCurSched.ItemsSource = "";
+                    dtCurSched.Visibility = Visibility.Hidden;
+                    txtSearch.Text = "";
+                    Site = " where fld_site=" + Convert.ToInt32(cmbSite.SelectedValue);
+                    dt.Columns[0].Visibility = Visibility.Visible;
+                    dt.Columns[3].Visibility = Visibility.Visible;
+                    getEMP(Site);
+                   
+                }
+
+                //txtSearch.Text = "";
+                //Site = " where fld_site=" + Convert.ToInt32(cmbSite.SelectedValue) + " and fld_isActive = 1 ";
+                //getEMP(Site);
+                //dt.Columns[0].Visibility = Visibility.Visible;
+                //dt.Columns[3].Visibility = Visibility.Visible;
 
             }
 
@@ -269,17 +288,28 @@ namespace Payroll_
 
         private void btViewSched_Click(object sender, RoutedEventArgs e)
         {
+            dt.Visibility = Visibility.Hidden;
             getCurSched(Convert.ToString(clsSchedule._SelempID));
             dtCurSched.Visibility = Visibility.Visible;
             btAddSchedule.IsEnabled = true;
             btViewSched.IsEnabled = false;
         }
 
-        private void btEffectivity_Click(object sender, RoutedEventArgs e)
+        private async void btEffectivity_Click(object sender, RoutedEventArgs e)
         {
-         
-            MessageBoxResult ans = MessageBox.Show("Are you sure you want to save this Schedule?", "Effectivity Schedule", MessageBoxButton.YesNo);
-            if (ans.ToString() == "Yes" && dtSched.SelectedIndex >= 0)
+            var mySettings = new MetroDialogSettings()
+            {
+                AffirmativeButtonText = "Yes",
+                NegativeButtonText = "No",
+             
+                //ColorScheme = MetroDialogOptions.ColorScheme
+            };
+
+            MessageDialogResult result = await (Application.Current.MainWindow as Window1).ShowMessageAsync("NEW Schedule" , 
+                                            Environment.NewLine + "Do you want to Save this?",
+                MessageDialogStyle.AffirmativeAndNegative, mySettings);
+
+            if (result == MessageDialogResult.Affirmative && dtSched.SelectedIndex >= 0)
             {
                 using (Database _Database = new Database())
                 {
@@ -289,7 +319,7 @@ namespace Payroll_
                 }
 
             }
-            else if (ans.ToString() == "Yes" && dtSched.SelectedIndex < 0) MessageBox.Show("No selected schedule");
+            else if (result == MessageDialogResult.Negative && dtSched.SelectedIndex < 0) await (Window1.GetWindow(this) as Window1).ShowMessageAsync("NEW Schedule", "No record found");;
 
         }
 
@@ -317,6 +347,11 @@ namespace Payroll_
         }
 
         private void cmbSchedType_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void dt_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
 
         }
